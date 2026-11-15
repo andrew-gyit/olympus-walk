@@ -1,0 +1,30 @@
+{
+  "original_session": {
+    "platform": "OpenCode",
+    "status": "succeeded",
+    "messages": 425,
+    "tool_counts": {
+      "shell": 130,
+      "read": 150,
+      "write": 76,
+      "grep": 30,
+      "edit": 67,
+      "execute": 60
+    },
+    "original_session_time_utc": {
+      "start": "2026-11-15T05:13:29.806000+00:00",
+      "last": "2026-11-15T17:07:11.706000+00:00"
+    }
+  },
+  "reconstruction": {
+    "source_file_count": 49,
+    "edits_applied": 63,
+    "bulk_transformations": 1,
+    "edit_match_failures": 0,
+    "syntax_parse_TS_files": 40,
+    "syntax_errors": 0,
+    "full_npm_build_verified_here": false,
+    "reason": "npm registry DNS resolution failure in packaging environment"
+  },
+  "privacy": "Only relative file paths, no raw user-local path or session ID included"
+}

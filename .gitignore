@@ -1,0 +1,23 @@
+# Dependencias y artefactos generados
+node_modules/
+dist/
+coverage/
+.vite/
+*.tsbuildinfo
+*.log
+npm-debug.log*
+*.local
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+# Distribuciones generadas localmente
+OLYMPUS-WALK.html
+olympus-walk-web.zip
+_shots/
+# Datos de sesión crudos de OpenCode y documentos con rutas locales
+*session-export*.json
+*development-session*.json
