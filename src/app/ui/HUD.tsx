@@ -57,10 +57,11 @@ function usePointerLocked() {
 function Panel({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <div
-      className={`border px-3 py-2.5 ${className}`}
+      className={`border px-3.5 py-3 ${className}`}
       style={{
-        borderColor: 'rgba(217,145,99,0.28)',
-        background: 'linear-gradient(160deg, rgba(24,14,11,0.78), rgba(11,7,6,0.62))',
+        borderColor: 'rgba(217,145,99,0.34)',
+        // Slightly denser than before so light text keeps contrast over the bright Mars sky/terrain.
+        background: 'linear-gradient(160deg, rgba(24,14,11,0.88), rgba(11,7,6,0.78))',
         boxShadow: '0 10px 30px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,225,197,0.05)',
         backdropFilter: 'blur(9px)',
       }}
@@ -100,15 +101,15 @@ function MissionCard() {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="mono text-[8px] tracking-[0.22em]" style={{ color: '#d99163' }}>
+            <span className="mono text-ui-xs tracking-[0.22em]" style={{ color: '#d99163' }}>
               {mission.code}
             </span>
-            <span className="mono text-[8px] text-mars-200/35">/ FIELD MISSION</span>
+            <span className="mono text-ui-xs text-mars-200/65">/ FIELD MISSION</span>
           </div>
-          <div className="display truncate text-[13px] font-semibold tracking-wide text-mars-100">{mission.name}</div>
+          <div className="display truncate text-ui-2xl font-semibold tracking-wide text-mars-100">{mission.name}</div>
         </div>
         <button
-          className="mono shrink-0 border px-1.5 py-0.5 text-[8px] tracking-[0.12em]"
+          className="mono shrink-0 border px-1.5 py-0.5 text-ui-xs tracking-[0.12em]"
           style={{ borderColor: 'rgba(143,240,210,0.35)', color: '#8ff0d2' }}
           onClick={() => openPanel('objectives')}
           title="Open objectives (Tab)"
@@ -123,33 +124,33 @@ function MissionCard() {
       >
         <div className="flex items-center gap-1.5">
           {returnReady ? (
-            <ShieldCheck size={11} style={{ color: '#8ff0d2' }} />
+            <ShieldCheck size={16} style={{ color: '#8ff0d2' }} />
           ) : (
-            <Crosshair size={11} style={{ color: current ? '#ffcf7a' : '#8e6b57' }} />
+            <Crosshair size={16} style={{ color: current ? '#ffcf7a' : '#b08a72' }} />
           )}
-          <span className="text-[10px] leading-tight" style={{ color: returnReady ? '#b9f5e2' : '#f8ddc8' }}>
+          <span className="text-ui-lg font-medium leading-tight" style={{ color: returnReady ? '#b9f5e2' : '#f8ddc8' }}>
             {headline}
           </span>
         </div>
-        <div className="mt-0.5 line-clamp-2 text-[8.5px] leading-relaxed text-mars-200/50">{detail}</div>
+        <div className="mt-0.5 line-clamp-3 text-ui-sm leading-snug text-mars-200/80">{detail}</div>
         {!returnReady && count > 1 && (
           <div className="mt-1 flex items-center gap-1.5">
             <Meter value={progress} color="#ffcf7a" height={2} warn={-1} />
-            <span className="mono shrink-0 text-[7px] text-mars-200/45">
-              {Math.min(current?.progress ?? 0, count)}/{count}
+            <span className="mono shrink-0 text-ui-2xs text-mars-200/65">
+              {Math.round(Math.min(current?.progress ?? 0, count))}/{count}
             </span>
           </div>
         )}
       </div>
 
-      <div className="mono mt-2 grid grid-cols-3 gap-1 border-t pt-1.5 text-[8px]" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
-        <span className="text-mars-200/45">
+      <div className="mono mt-2 grid grid-cols-3 gap-1 border-t pt-1.5 text-ui-xs" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
+        <span className="text-mars-200/65">
           <span className="text-mars-100/80">{distanceLabel}</span> {distance !== null ? `${Math.round(distance)} m` : '—'}
         </span>
-        <span className="text-center text-mars-200/45">
+        <span className="text-center text-mars-200/65">
           <span className="text-mars-100/80">WALK</span> {Math.round(mission.distanceWalked)} m
         </span>
-        <span className="text-right text-mars-200/45">
+        <span className="text-right text-mars-200/65">
           <span className="text-mars-100/80">T+</span> {formatClock(mission.elapsed)}
         </span>
       </div>
@@ -169,24 +170,24 @@ function AlertStack() {
         return (
           <div
             key={alert.id}
-            className="toast border-l-2 px-2.5 py-1.5"
+            className="toast border-l-2 px-3 py-2"
             style={{
               borderColor: color,
-              background: 'linear-gradient(100deg, rgba(22,13,10,0.9), rgba(14,9,7,0.7))',
+              background: 'linear-gradient(100deg, rgba(22,13,10,0.94), rgba(14,9,7,0.82))',
               boxShadow: `0 6px 22px rgba(0,0,0,0.36), inset 0 0 22px ${color}0a`,
             }}
           >
             <div className="flex items-center gap-1.5">
               {alert.level === 'critical' || alert.level === 'warning' ? (
-                <TriangleAlert size={10} style={{ color }} />
+                <TriangleAlert size={15} style={{ color }} />
               ) : (
                 <span className="inline-block h-1.5 w-1.5" style={{ background: color, boxShadow: `0 0 6px ${color}` }} />
               )}
-              <span className="mono text-[8px] tracking-[0.16em]" style={{ color }}>
+              <span className="mono text-ui-xs tracking-[0.16em]" style={{ color }}>
                 {alert.title}
               </span>
             </div>
-            <div className="mt-0.5 text-[9px] leading-relaxed text-mars-100/65">{alert.message}</div>
+            <div className="mt-0.5 text-ui-md leading-snug text-mars-100/85">{alert.message}</div>
           </div>
         );
       })}
@@ -212,10 +213,10 @@ function EnvironmentCard() {
     <Panel className="w-full">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
-          <Sun size={11} className="text-mars-300/80" />
-          <span className="label !text-[8px]">SURFACE CONDITIONS</span>
+          <Sun size={16} className="text-mars-300/80" />
+          <span className="label !text-ui-xs">SURFACE CONDITIONS</span>
         </div>
-        <span className="mono text-[8px] text-mars-200/45">
+        <span className="mono text-ui-xs text-mars-200/65">
           SOL {String(hh).padStart(2, '0')}:{String(mm).padStart(2, '0')}
         </span>
       </div>
@@ -225,45 +226,45 @@ function EnvironmentCard() {
           className="mt-1.5 flex items-center gap-1.5 border px-1.5 py-1"
           style={{ borderColor: 'rgba(255,179,92,0.45)', background: 'rgba(92,57,19,0.28)' }}
         >
-          <TriangleAlert size={10} className="text-warn" />
-          <span className="mono text-[8px] tracking-[0.14em] text-warn">
+          <TriangleAlert size={15} className="text-warn" />
+          <span className="mono text-ui-xs tracking-[0.14em] text-warn">
             DUST STORM · {Math.round(environment.stormIntensity * 100)}%
           </span>
         </div>
       )}
 
-      <div className="mono mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1 text-[9px]">
-        <div className="flex items-center gap-1 text-mars-200/50">
-          <Thermometer size={9} /> <span className="text-mars-100/85">{environment.ambientTempC.toFixed(1)}°C</span>
+      <div className="mono mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1 text-ui-sm">
+        <div className="flex items-center gap-1 text-mars-200/65">
+          <Thermometer size={14} /> <span className="text-mars-100/85">{environment.ambientTempC.toFixed(1)}°C</span>
         </div>
-        <div className="flex items-center gap-1 text-mars-200/50">
-          <Wind size={9} /> <span className="text-mars-100/85">{environment.windMs.toFixed(1)} m/s</span>
+        <div className="flex items-center gap-1 text-mars-200/65">
+          <Wind size={14} /> <span className="text-mars-100/85">{environment.windMs.toFixed(1)} m/s</span>
         </div>
-        <div className="flex items-center gap-1 text-mars-200/50">
-          <Layers size={9} /> <span className="text-mars-100/85">DUST {Math.round(environment.dust * 100)}%</span>
+        <div className="flex items-center gap-1 text-mars-200/65">
+          <Layers size={14} /> <span className="text-mars-100/85">DUST {Math.round(environment.dust * 100)}%</span>
         </div>
-        <div className="flex items-center gap-1 text-mars-200/50">
-          <Radio size={9} /> <span className="text-mars-100/85">{Math.round(telemetry.commQuality)}% LINK</span>
+        <div className="flex items-center gap-1 text-mars-200/65">
+          <Radio size={14} /> <span className="text-mars-100/85">{Math.round(telemetry.commQuality)}% LINK</span>
         </div>
-        <div className="flex items-center gap-1 text-mars-200/50">
-          <Zap size={9} /> <span className="text-mars-100/85">{environment.radiationUSvH.toFixed(2)} µSv/h</span>
+        <div className="flex items-center gap-1 text-mars-200/65">
+          <Zap size={14} /> <span className="text-mars-100/85">{environment.radiationUSvH.toFixed(2)} µSv/h</span>
         </div>
-        <div className="flex items-center gap-1 text-mars-200/50">
+        <div className="flex items-center gap-1 text-mars-200/65">
           <GaugeIcon /> <span className="text-mars-100/85">{environment.solarFlux.toFixed(2)} FLUX</span>
         </div>
       </div>
 
       <div className="mt-2 flex items-center justify-between gap-1 border-t pt-1.5" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
-        <span className="mono text-[7px] tracking-[0.08em] text-mars-200/30">SIMULATED METEOROLOGY</span>
+        <span className="mono text-ui-2xs tracking-[0.08em] text-mars-200/65">SIMULATED METEOROLOGY</span>
         <div className="flex items-center gap-1">
           <button className="btn btn-ghost !px-1.5 !py-1" onClick={() => openPanel('map')} title="Wrist map (M)">
-            <MapIcon size={11} />
+            <MapIcon size={16} />
           </button>
           <button className="btn btn-ghost !px-1.5 !py-1" onClick={() => openPanel('pp')} title="Planetary protection (P)">
-            <Shield size={11} />
+            <Shield size={16} />
           </button>
           <button className="btn btn-ghost !px-1.5 !py-1" onClick={paused ? undefined : pauseGame} title="Pause (Esc)">
-            <Pause size={11} />
+            <Pause size={16} />
           </button>
         </div>
       </div>
@@ -272,7 +273,7 @@ function EnvironmentCard() {
 }
 
 function GaugeIcon() {
-  return <Compass size={9} />;
+  return <Compass size={14} />;
 }
 
 /* --------------------------------------------------------------------- suit */
@@ -286,12 +287,12 @@ function SuitRow({ icon, label, value, color }: { icon: ReactNode; label: string
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-1">
-          <span className="mono text-[7.5px] tracking-[0.14em] text-mars-200/48">{label}</span>
-          <span className="mono text-[9px]" style={{ color: value <= 12 ? '#ff6b57' : low ? '#ffb35c' : '#f4dfcc' }}>
+          <span className="mono text-ui-xs tracking-[0.14em] text-mars-200/80">{label}</span>
+          <span className="mono text-ui-lg font-semibold" style={{ color: value <= 12 ? '#ff6b57' : low ? '#ffb35c' : '#f4dfcc' }}>
             {Math.round(value)}
           </span>
         </div>
-        <Meter value={value} color={color} height={2.5} warn={28} />
+        <Meter value={value} color={color} height={5} warn={28} />
       </div>
     </div>
   );
@@ -306,11 +307,11 @@ function SuitCard() {
     <Panel className="w-full">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
-          <ShieldCheck size={11} className="text-signal/80" />
-          <span className="label !text-[8px]">SUIT / LIFE SUPPORT</span>
+          <ShieldCheck size={16} className="text-signal/80" />
+          <span className="label !text-ui-xs">SUIT / LIFE SUPPORT</span>
         </div>
         <span
-          className="mono text-[8px]"
+          className="mono text-ui-xs"
           style={{ color: suit < 40 ? '#ffb35c' : '#8ff0d2' }}
         >
           {suit >= 70 ? 'NOMINAL' : suit >= 40 ? 'DEGRADED' : 'CRITICAL'}
@@ -318,21 +319,21 @@ function SuitCard() {
       </div>
 
       <div className="mt-1.5 grid gap-1">
-        <SuitRow icon={<Droplets size={9} />} label="OXYGEN" value={resources.oxygen} color="#9fd8e8" />
-        <SuitRow icon={<BatteryMedium size={9} />} label="BATTERY" value={resources.battery} color="#8ff0d2" />
-        <SuitRow icon={<Shield size={9} />} label="SUIT" value={resources.suitIntegrity} color="#ffcf7a" />
-        <SuitRow icon={<Thermometer size={9} />} label="THERMAL" value={resources.thermal} color="#d88744" />
-        <SuitRow icon={<HeartPulse size={9} />} label="PHYSICAL" value={resources.physical} color="#b9e6c6" />
-        <SuitRow icon={<Radio size={9} />} label="COMMS" value={resources.communication} color="#b49bff" />
+        <SuitRow icon={<Droplets size={14} />} label="OXYGEN" value={resources.oxygen} color="#9fd8e8" />
+        <SuitRow icon={<BatteryMedium size={14} />} label="BATTERY" value={resources.battery} color="#8ff0d2" />
+        <SuitRow icon={<Shield size={14} />} label="SUIT" value={resources.suitIntegrity} color="#ffcf7a" />
+        <SuitRow icon={<Thermometer size={14} />} label="THERMAL" value={resources.thermal} color="#d88744" />
+        <SuitRow icon={<HeartPulse size={14} />} label="PHYSICAL" value={resources.physical} color="#b9e6c6" />
+        <SuitRow icon={<Radio size={14} />} label="COMMS" value={resources.communication} color="#b49bff" />
       </div>
 
       <div className="mt-2 flex items-center gap-2 border-t pt-1.5" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
-        <Layers size={9} className="text-mars-300/70" />
+        <Layers size={14} className="text-mars-300/80" />
         <div className="flex flex-1 items-center gap-1.5">
           <div className="flex-1">
             <Meter value={inventoryPct} color="#8ff0d2" height={2.5} warn={85} />
           </div>
-          <span className="mono text-[8px] text-mars-200/55">
+          <span className="mono text-ui-xs text-mars-200/65">
             BAY {resources.inventoryUsed}/{resources.inventoryCapacity}
           </span>
         </div>
@@ -365,13 +366,16 @@ function Minimap() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Drawing coordinates stay in a 166-unit square; the canvas is shown larger via CSS (--u)
+    // and its pixel buffer follows the on-screen size so the map stays sharp.
     const size = 166;
     const dpr = Math.min(2, window.devicePixelRatio || 1);
-    if (canvas.width !== Math.round(size * dpr)) {
-      canvas.width = Math.round(size * dpr);
-      canvas.height = Math.round(size * dpr);
+    const buffer = Math.round((canvas.getBoundingClientRect().width || size) * dpr);
+    if (canvas.width !== buffer) {
+      canvas.width = buffer;
+      canvas.height = buffer;
     }
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.setTransform(buffer / size, 0, 0, buffer / size, 0, 0);
     ctx.clearRect(0, 0, size, size);
 
     const cx = size / 2;
@@ -545,12 +549,12 @@ function Minimap() {
     ctx.restore();
 
     // North marker.
-    ctx.fillStyle = 'rgba(248,221,200,0.7)';
-    ctx.font = 'bold 8px Consolas, monospace';
+    ctx.fillStyle = 'rgba(248,221,200,0.92)';
+    ctx.font = 'bold 10px Consolas, monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('N', cx, 11);
-    ctx.fillStyle = 'rgba(248,221,200,0.35)';
-    ctx.font = '7px Consolas, monospace';
+    ctx.fillText('N', cx, 12);
+    ctx.fillStyle = 'rgba(248,221,200,0.7)';
+    ctx.font = '9px Consolas, monospace';
     ctx.fillText('150 m', cx, size - 4);
     ctx.textAlign = 'left';
   }, [telemetry, scanned, analyzed, reached, navigation.selectedRoute, navigation.destination, navigation.destinationPoiId]);
@@ -560,10 +564,10 @@ function Minimap() {
       className="relative block cursor-pointer"
       onClick={() => openPanel('map')}
       title="Open wrist map (M)"
-      style={{ width: 166, height: 166, background: 'transparent' }}
+      style={{ width: 'calc(200 * var(--u))', height: 'calc(200 * var(--u))', background: 'transparent' }}
     >
-      <canvas ref={canvasRef} style={{ width: 166, height: 166, display: 'block' }} />
-      <span className="mono absolute left-1/2 top-1/2 hidden -translate-x-1/2 translate-y-8 text-[7px] tracking-[0.16em] text-mars-200/35">
+      <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+      <span className="mono absolute left-1/2 top-1/2 hidden -translate-x-1/2 translate-y-8 text-ui-2xs tracking-[0.16em] text-mars-200/65">
         MAP
       </span>
     </button>
@@ -586,15 +590,15 @@ function ToolBelt() {
             <button
               key={meta.id}
               onClick={() => setTool(meta.id)}
-              className="flex flex-col items-center gap-0.5 border px-1 py-1.5 transition-colors"
+              className="flex flex-col items-center gap-0.5 border px-1 py-2 transition-colors"
               style={{
-                borderColor: active ? `${meta.color}88` : 'rgba(217,145,99,0.2)',
-                background: active ? `${meta.color}14` : 'rgba(15,9,8,0.55)',
+                borderColor: active ? `${meta.color}88` : 'rgba(217,145,99,0.3)',
+                background: active ? `${meta.color}1f` : 'rgba(15,9,8,0.72)',
               }}
               title={`Select ${meta.label.toLowerCase()} (${meta.key})`}
             >
-              <Icon size={13} style={{ color: active ? meta.color : 'rgba(226,178,141,0.55)' }} />
-              <span className="mono text-[6.5px] tracking-[0.08em]" style={{ color: active ? meta.color : 'rgba(226,178,141,0.45)' }}>
+              <Icon size={17} style={{ color: active ? meta.color : 'rgba(232,186,150,0.85)' }} />
+              <span className="mono text-ui-xs tracking-[0.06em]" style={{ color: active ? meta.color : 'rgba(232,186,150,0.85)' }}>
                 {meta.label}
               </span>
             </button>
@@ -602,8 +606,8 @@ function ToolBelt() {
         })}
       </div>
       <button className="btn btn-ghost mt-1 w-full !justify-between !px-2 !py-1" onClick={toggleCameraMode}>
-        <span className="mono text-[7.5px] tracking-[0.1em]">VIEW · {cameraMode === 'third' ? 'THIRD PERSON' : 'HELMET'}</span>
-        <span className="mono text-[7px] text-mars-200/35">C</span>
+        <span className="mono text-ui-xs tracking-[0.08em]">VIEW · {cameraMode === 'third' ? 'THIRD PERSON' : 'HELMET'}</span>
+        <span className="kbd">C</span>
       </button>
     </div>
   );
@@ -620,10 +624,10 @@ function CompassStrip() {
 
   return (
     <div
-      className="relative h-9 w-[300px] overflow-hidden border-x border-b"
+      className="relative h-[calc(46*var(--u))] w-[calc(360*var(--u))] overflow-hidden border-x border-b"
       style={{
-        borderColor: 'rgba(217,145,99,0.22)',
-        background: 'linear-gradient(180deg, rgba(14,8,6,0.62), rgba(14,8,6,0.12))',
+        borderColor: 'rgba(217,145,99,0.3)',
+        background: 'linear-gradient(180deg, rgba(14,8,6,0.78), rgba(14,8,6,0.3))',
         maskImage: 'linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent)',
         WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent)',
       }}
@@ -640,8 +644,8 @@ function CompassStrip() {
             <div style={{ width: 1, height: major ? 8 : 4, background: cardinal ? 'rgba(143,240,210,0.8)' : 'rgba(248,221,200,0.32)' }} />
             {major && (
               <span
-                className="mono absolute -top-3 left-1/2 -translate-x-1/2 text-[7px]"
-                style={{ color: cardinal ? '#8ff0d2' : 'rgba(248,221,200,0.42)' }}
+                className="mono absolute -top-[1.1rem] left-1/2 -translate-x-1/2 text-ui-xs"
+                style={{ color: cardinal ? '#8ff0d2' : 'rgba(248,221,200,0.75)' }}
               >
                 {cardinal ?? String(normalized).padStart(3, '0')}
               </span>
@@ -650,7 +654,7 @@ function CompassStrip() {
         );
       })}
       <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2" style={{ background: 'rgba(255,207,122,0.55)' }} />
-      <div className="mono absolute bottom-0.5 left-1/2 -translate-x-1/2 text-[8px]" style={{ color: '#ffcf7a' }}>
+      <div className="mono absolute left-1/2 top-0.5 -translate-x-1/2 text-ui-sm font-semibold" style={{ color: '#ffcf7a' }}>
         {String(Math.round(bearing)).padStart(3, '0')}°
       </div>
     </div>
@@ -678,7 +682,7 @@ function InteractionPrompt() {
   return (
     <div className="flex w-full flex-col items-center gap-1.5">
       {hint && (
-        <div className="mono border px-2 py-1 text-[7.5px] tracking-[0.14em] text-mars-200/45" style={{ borderColor: 'rgba(217,145,99,0.2)', background: 'rgba(11,7,6,0.55)' }}>
+        <div className="mono border px-2.5 py-1 text-ui-xs tracking-[0.1em] text-mars-100/85" style={{ borderColor: 'rgba(217,145,99,0.3)', background: 'rgba(11,7,6,0.8)' }}>
           {hint}
         </div>
       )}
@@ -691,18 +695,18 @@ function InteractionPrompt() {
             boxShadow: '0 8px 26px rgba(0,0,0,0.4)',
           }}
         >
-          <span className="kbd !px-2 !py-0.5 !text-[10px]">E</span>
+          <span className="kbd !px-2 !py-0.5 !text-ui-md">E</span>
           <div className="min-w-0">
-            <div className="label !text-[7px]">FIELD ACTION</div>
-            <div className="max-w-[46vw] truncate text-[10px] text-mars-100 md:max-w-[360px]">{interaction.prompt}</div>
+            <div className="label !text-ui-xs">FIELD ACTION</div>
+            <div className="max-w-[46vw] truncate text-ui-lg text-mars-100 xl:max-w-[calc(460*var(--u))]">{interaction.prompt}</div>
           </div>
-          <span className="chip chip-warn shrink-0 !py-0 !text-[7px]">{interaction.action}</span>
-          <span className="mono hidden shrink-0 text-[8px] text-mars-200/45 sm:block">{Math.round(interaction.distance)} m</span>
+          <span className="chip chip-warn shrink-0 !py-0 !text-ui-xs">{interaction.action}</span>
+          <span className="mono hidden shrink-0 text-ui-xs text-mars-200/65 sm:block">{Math.round(interaction.distance)} m</span>
         </div>
       ) : (
-        <div className="mono flex items-center gap-1.5 text-[7.5px] tracking-[0.12em] text-mars-200/30">
-          <Crosshair size={9} /> APPROACH A MARKED TARGET TO INTERACT
-          {tool === 'camera' && <span className="text-ice/60">· E CAPTURES THE FRAME</span>}
+        <div className="mono flex items-center gap-1.5 text-ui-xs tracking-[0.1em] text-mars-100/80" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
+          <Crosshair size={14} /> APPROACH A MARKED TARGET TO INTERACT
+          {tool === 'camera' && <span className="text-ice/80">· E CAPTURES THE FRAME</span>}
         </div>
       )}
     </div>
@@ -714,10 +718,10 @@ function HintLine() {
   if (!hint) return null;
   return (
     <div
-      className="max-w-[min(560px,82vw)] border-l-2 px-2.5 py-1"
-      style={{ borderColor: '#ffb35c', background: 'linear-gradient(90deg, rgba(30,19,13,0.82), transparent)' }}
+      className="max-w-[min(calc(640*var(--u)),82vw)] border-l-2 px-3 py-1.5"
+      style={{ borderColor: '#ffb35c', background: 'linear-gradient(90deg, rgba(30,19,13,0.9), rgba(30,19,13,0.55))' }}
     >
-      <div className="text-[9px] leading-relaxed text-mars-100/75">{hint.text}</div>
+      <div className="text-ui-md leading-snug text-mars-100/90">{hint.text}</div>
     </div>
   );
 }
@@ -731,18 +735,18 @@ function ScanPanel() {
     <Panel className="w-full">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <ScanLine size={10} style={{ color: '#8ff0d2' }} />
-          <span className="mono text-[8px] tracking-[0.16em]" style={{ color: '#8ff0d2' }}>
+          <ScanLine size={15} style={{ color: '#8ff0d2' }} />
+          <span className="mono text-ui-xs tracking-[0.16em]" style={{ color: '#8ff0d2' }}>
             SWEEP · {scan.results.length} CONTACTS
           </span>
         </div>
-        <span className="mono text-[7px] text-mars-200/35">&lt;85 m</span>
+        <span className="mono text-ui-xs text-mars-200/80">&lt;85 m</span>
       </div>
       <div className="mt-1 space-y-0.5">
         {scan.results.slice(0, 5).map((result) => (
-          <div key={result.poiId} className="flex items-center justify-between gap-2 text-[8px]">
-            <span className="min-w-0 flex-1 truncate text-mars-100/70">{result.signature}</span>
-            <span className="mono shrink-0 text-mars-200/45">{result.distance} m</span>
+          <div key={result.poiId} className="flex items-center justify-between gap-2 text-ui-sm">
+            <span className="min-w-0 flex-1 truncate text-mars-100/85">{result.signature}</span>
+            <span className="mono shrink-0 text-mars-200/65">{result.distance} m</span>
             <div className="h-1 w-10 shrink-0 bg-mars-100/10">
               <div style={{ width: `${result.strength}%`, height: '100%', background: '#8ff0d2' }} />
             </div>
@@ -829,49 +833,49 @@ export function HUD() {
       )}
 
       {/* Compass ribbon */}
-      <div className="pointer-events-none absolute left-1/2 top-2 hidden -translate-x-1/2 md:block">
+      <div className="pointer-events-none absolute left-1/2 top-2 hidden -translate-x-1/2 xl:block">
         <CompassStrip />
       </div>
 
       {/* Alerts */}
-      <div className="pointer-events-none absolute left-1/2 top-[52px] z-20 w-[min(380px,86vw)] -translate-x-1/2">
+      <div className="pointer-events-none absolute left-1/2 top-[calc(62*var(--u))] z-20 w-[min(380px,86vw)] -translate-x-1/2 xl:w-[max(280px,min(calc(460*var(--u)),calc(100vw_-_850*var(--u))))]">
         <AlertStack />
       </div>
 
       {/* Mission + scanner stack */}
-      <div className="absolute left-3 top-3 flex w-[300px] max-w-[80vw] flex-col gap-1.5">
+      <div className="absolute left-3 top-3 flex w-[300px] max-w-[80vw] flex-col gap-1.5 xl:w-[calc(400*var(--u))]">
         <MissionCard />
         <ScanPanel />
       </div>
 
       {/* Environment + quick access */}
-      <div className="absolute right-3 top-3 hidden w-[244px] flex-col gap-1.5 sm:flex">
+      <div className="absolute right-3 top-3 hidden w-[244px] flex-col gap-1.5 sm:flex xl:w-[calc(320*var(--u))]">
         <EnvironmentCard />
       </div>
 
       {/* Suit */}
-      <div className="absolute bottom-3 left-3 hidden w-[252px] flex-col gap-1.5 md:flex">
+      <div className="absolute bottom-3 left-3 hidden w-[calc(330*var(--u))] flex-col gap-1.5 xl:flex">
         <SuitCard />
-        <div className="mono flex items-center justify-between px-0.5 text-[7px] tracking-[0.08em] text-mars-200/28">
-          <span className="flex items-center gap-1"><Footprints size={8} /> {Math.round(mission?.distanceWalked ?? 0)} m</span>
-          <span className="flex items-center gap-1"><Timer size={8} /> {formatDuration(mission?.elapsed ?? 0)}</span>
-          <span className="flex items-center gap-1"><Crosshair size={8} /> {Math.round(telemetry.slope)}°</span>
+        <div className="mono flex items-center justify-between px-0.5 text-ui-xs tracking-[0.06em] text-mars-100/80">
+          <span className="flex items-center gap-1"><Footprints size={13} /> {Math.round(mission?.distanceWalked ?? 0)} m</span>
+          <span className="flex items-center gap-1"><Timer size={13} /> {formatDuration(mission?.elapsed ?? 0)}</span>
+          <span className="flex items-center gap-1"><Crosshair size={13} /> {Math.round(telemetry.slope)}°</span>
         </div>
       </div>
 
       {/* Minimap + tools */}
-      <div className="absolute bottom-3 right-3 hidden w-[184px] flex-col items-center md:flex">
+      <div className="absolute bottom-3 right-3 hidden w-[calc(228*var(--u))] flex-col items-center xl:flex">
         <div
           className="border p-1.5"
           style={{
-            borderColor: 'rgba(217,145,99,0.28)',
-            background: 'linear-gradient(160deg, rgba(24,14,11,0.78), rgba(11,7,6,0.62))',
+            borderColor: 'rgba(217,145,99,0.34)',
+            background: 'linear-gradient(160deg, rgba(24,14,11,0.88), rgba(11,7,6,0.78))',
             backdropFilter: 'blur(9px)',
           }}
         >
           <div className="flex items-center justify-between px-0.5 pb-1">
-            <span className="label !text-[7.5px]">WRIST MAP</span>
-            <span className="mono text-[7px] text-mars-200/35">M</span>
+            <span className="label !text-ui-xs">WRIST MAP</span>
+            <span className="kbd">M</span>
           </div>
           <Minimap />
         </div>
@@ -879,7 +883,7 @@ export function HUD() {
       </div>
 
       {/* Center bottom guidance */}
-      <div className="pointer-events-none absolute bottom-4 left-1/2 flex w-[min(680px,92vw)] -translate-x-1/2 flex-col items-center gap-1.5 px-2 md:bottom-3">
+      <div className="pointer-events-none absolute bottom-[calc(76*var(--u))] left-1/2 flex w-[min(680px,92vw)] -translate-x-1/2 flex-col items-center gap-1.5 px-2 xl:bottom-3 xl:w-[min(calc(680*var(--u)),calc(100vw_-_708*var(--u)))]">
         <HintLine />
         <div className="pointer-events-auto w-full">
           <InteractionPrompt />
@@ -887,18 +891,18 @@ export function HUD() {
       </div>
 
       {/* Bottom-left compact resource strip on small screens */}
-      <div className="absolute bottom-3 left-3 right-3 md:hidden">
+      <div className="absolute bottom-3 left-3 right-3 xl:hidden">
         <div
           className="flex items-center gap-2 border px-2.5 py-1.5"
           style={{ borderColor: 'rgba(217,145,99,0.25)', background: 'rgba(13,8,6,0.7)', backdropFilter: 'blur(8px)' }}
         >
-          <MobileMeter icon={<Droplets size={9} />} value={resources.oxygen} label="O2" color="#9fd8e8" />
-          <MobileMeter icon={<BatteryMedium size={9} />} value={resources.battery} label="PWR" color="#8ff0d2" />
-          <MobileMeter icon={<Shield size={9} />} value={resources.suitIntegrity} label="SUIT" color="#ffcf7a" />
-          <MobileMeter icon={<Thermometer size={9} />} value={resources.thermal} label="THM" color="#d88744" />
-          <div className="mono ml-auto shrink-0 text-right text-[7px] leading-tight text-mars-200/40">
+          <MobileMeter icon={<Droplets size={14} />} value={resources.oxygen} label="O2" color="#9fd8e8" />
+          <MobileMeter icon={<BatteryMedium size={14} />} value={resources.battery} label="PWR" color="#8ff0d2" />
+          <MobileMeter icon={<Shield size={14} />} value={resources.suitIntegrity} label="SUIT" color="#ffcf7a" />
+          <MobileMeter icon={<Thermometer size={14} />} value={resources.thermal} label="THM" color="#d88744" />
+          <div className="mono ml-auto shrink-0 text-right text-ui-xs leading-tight text-mars-100/80">
             <div>{Math.round(telemetry.campDistance)} m CAMP</div>
-            <div className="text-signal/70">{Math.round(telemetry.commQuality)}% LINK</div>
+            <div className="text-signal/80">{Math.round(telemetry.commQuality)}% LINK</div>
           </div>
         </div>
       </div>
@@ -914,8 +918,8 @@ function MobileMeter({ icon, value, label, color }: { icon: ReactNode; value: nu
     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
       <div className="flex items-center gap-1">
         <span style={{ color: value <= 28 ? '#ffb35c' : color }}>{icon}</span>
-        <span className="mono text-[6.5px] text-mars-200/45">{label}</span>
-        <span className="mono ml-auto text-[7.5px] text-mars-100/75">{Math.round(value)}</span>
+        <span className="mono text-ui-xs text-mars-200/80">{label}</span>
+        <span className="mono ml-auto text-ui-xs text-mars-100/90">{Math.round(value)}</span>
       </div>
       <Meter value={value} color={color} height={2} warn={28} />
     </div>
