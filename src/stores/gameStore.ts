@@ -467,7 +467,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       position: { x: WORLD.spawn.x, y: spawnH + PLAYER.eyeHeight, z: WORLD.spawn.z },
     });
     const first = def.objectives.find((o) => o.required);
-    if (first) get().setHint(touchHint(first.hint ?? first.detail, get().touchMode), 12000);
+    if (first) get().setHint(first.hint ?? first.detail, 12000);
     setTimeout(() => get().saveNow(), 800);
     setTimeout(() => inputManager.requestLock(), 120);
   },
@@ -845,7 +845,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   setHint: (text, durationMs = 7000) => {
-    set({ hint: { id: uid('hint'), text, until: Date.now() + durationMs } });
+    set({ hint: { id: uid('hint'), text: touchHint(text, get().touchMode), until: Date.now() + durationMs } });
   },
 
   clearHint: () => set({ hint: null }),
