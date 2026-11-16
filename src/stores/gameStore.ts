@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CAMERA, PLAYER, RESOURCES, WORLD } from '../game/config';
+import { CAMERA, PLAYER, RESOURCES, WORLD, touchHint } from '../game/config';
 import { POIS, POI_BY_ID } from '../game/data/pois';
 import { ZONE_BY_ID, zoneAt } from '../game/data/zones';
 import { MISSIONS, MISSION_BY_ID } from '../game/data/missions';
@@ -467,7 +467,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       position: { x: WORLD.spawn.x, y: spawnH + PLAYER.eyeHeight, z: WORLD.spawn.z },
     });
     const first = def.objectives.find((o) => o.required);
-    if (first) get().setHint(first.hint ?? first.detail, 12000);
+    if (first) get().setHint(touchHint(first.hint ?? first.detail, get().touchMode), 12000);
     setTimeout(() => get().saveNow(), 800);
     setTimeout(() => inputManager.requestLock(), 120);
   },

@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { Camera, Crosshair, Footprints, Map as MapIcon, Pause, ScanLine, Sparkles, MoveUp } from 'lucide-react';
 import { gameSimulation } from '../../game/core/GameSimulation';
 import { inputManager } from '../../game/player/InputManager';
@@ -61,7 +61,21 @@ export function TouchControls() {
   const lookPointer = useRef<number | null>(null);
   const lastLook = useRef({ x: 0, y: 0 });
 
-  if (!touchMode || phase !== 'playing' || activePanel || analysisPoiId) return null;
+  const hidden = !touchMode || phase !== 'playing' || !!activePanel || !!analysisPoiId;
+
+  // The pad unmounts while a panel or the pause screen is open, so its pointerup never arrives.
+  // Drop any held touch input then; otherwise the last stick vector stays in InputManager and the
+  // astronaut keeps walking on its own after the panel closes (and it overrides WASD).
+  useEffect(() => {
+    if (!hidden) return;
+    stickPointer.current = null;
+    lookPointer.current = null;
+    setKnob({ x: 0, y: 0 });
+    inputManager.clearTouch();
+  }, [hidden]);
+  useEffect(() => () => inputManager.clearTouch(), []);
+
+  if (hidden) return null;
 
   function updateStick(e: ReactPointerEvent<HTMLDivElement>) {
     const el = stickRef.current;
@@ -108,6 +122,8 @@ export function TouchControls() {
         style={{ touchAction: 'none' }}
         onPointerDown={(e) => {
           if (e.pointerType === 'mouse') return;
+          // A second finger must not take over a drag that is still in progress.
+          if (lookPointer.current !== null && e.currentTarget.hasPointerCapture(lookPointer.current)) return;
           lookPointer.current = e.pointerId;
           lastLook.current = { x: e.clientX, y: e.clientY };
           e.currentTarget.setPointerCapture(e.pointerId);
@@ -126,6 +142,9 @@ export function TouchControls() {
         onPointerCancel={(e) => {
           if (lookPointer.current === e.pointerId) lookPointer.current = null;
         }}
+        onLostPointerCapture={(e) => {
+          if (lookPointer.current === e.pointerId) lookPointer.current = null;
+        }}
       >
         <div className="mono absolute right-4 top-4 text-ui-2xs tracking-[0.16em] text-mars-100/65">DRAG TO LOOK</div>
       </div>
@@ -142,6 +161,9 @@ export function TouchControls() {
         }}
         onPointerDown={(e) => {
           if (e.pointerType === 'mouse') return;
+          // A second finger (or a palm) on the pad must not hijack the stick: it would overwrite the
+          // tracked pointer and, on release, stop the movement while the first finger is still down.
+          if (stickPointer.current !== null && e.currentTarget.hasPointerCapture(stickPointer.current)) return;
           stickPointer.current = e.pointerId;
           e.currentTarget.setPointerCapture(e.pointerId);
           updateStick(e);
@@ -150,8 +172,15 @@ export function TouchControls() {
           if (stickPointer.current !== e.pointerId) return;
           updateStick(e);
         }}
-        onPointerUp={releaseStick}
-        onPointerCancel={releaseStick}
+        onPointerUp={(e) => {
+          if (stickPointer.current === e.pointerId) releaseStick();
+        }}
+        onPointerCancel={(e) => {
+          if (stickPointer.current === e.pointerId) releaseStick();
+        }}
+        onLostPointerCapture={(e) => {
+          if (stickPointer.current === e.pointerId) releaseStick();
+        }}
       >
         <div className="pointer-events-none absolute inset-0 rounded-full border" style={{ borderColor: 'rgba(217,145,99,0.1)' }} />
         <div className="pointer-events-none absolute inset-[34%] rounded-full border" style={{ borderColor: 'rgba(217,145,99,0.16)' }} />
