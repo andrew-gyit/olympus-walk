@@ -18,6 +18,7 @@ const dbg = {
   dx: 0,
   dy: 0,
   last: '-',
+  enter: 0,
   down: 0,
   move: 0,
   up: 0,
@@ -26,7 +27,19 @@ const dbg = {
   ignored: 0,
   look: 'idle',
   touches: 0,
+  err: '-',
+  // Raw window-level pointer events (capture phase), independent of the joystick handlers.
+  g: { down: 0, move: 0, up: 0, cancel: 0, held: false, target: '-', type: '-', inZone: false, x: 0, y: 0 },
+  // Highest values seen since the last finger-down, so a screenshot taken after release still shows what happened.
+  peak: { stick: 0, player: 0, speed: 0 },
 };
+
+const describe = (t: EventTarget | null) => {
+  const el = t as HTMLElement | null;
+  if (!el || !el.tagName) return '-';
+  return el.tagName.toLowerCase() + (typeof el.className === 'string' && el.className ? '.' + el.className.split(' ')[0].slice(0, 28) : '');
+};
+const errText = (err: unknown) => (err instanceof Error ? err.name + ': ' + err.message : String(err)).slice(0, 60);
 if (TOUCH_DEBUG) (window as unknown as Record<string, unknown>).__OW_TOUCH_DEBUG__ = dbg;
 
 function TouchDebug() {
@@ -37,6 +50,32 @@ function TouchDebug() {
     const count = (e: TouchEvent) => {
       dbg.touches = e.touches.length;
     };
+    const g = dbg.g;
+    const onDown = (e: PointerEvent) => {
+      g.down++;
+      g.held = true;
+      g.target = describe(e.target);
+      g.type = e.pointerType;
+      g.inZone = !!(e.target as HTMLElement | null)?.closest?.('[data-ow-stick]');
+      g.x = Math.round(e.clientX);
+      g.y = Math.round(e.clientY);
+      dbg.peak = { stick: 0, player: 0, speed: 0 };
+    };
+    const onMove = () => {
+      g.move++;
+    };
+    const onUp = () => {
+      g.up++;
+      g.held = false;
+    };
+    const onCancel = () => {
+      g.cancel++;
+      g.held = false;
+    };
+    window.addEventListener('pointerdown', onDown, true);
+    window.addEventListener('pointermove', onMove, true);
+    window.addEventListener('pointerup', onUp, true);
+    window.addEventListener('pointercancel', onCancel, true);
     window.addEventListener('touchstart', count, { passive: true });
     window.addEventListener('touchend', count, { passive: true });
     window.addEventListener('touchcancel', count, { passive: true });
@@ -45,10 +84,20 @@ function TouchDebug() {
       const now = performance.now();
       eff.current = Math.hypot(p.x - prev.current.x, p.z - prev.current.z) / Math.max(0.001, (now - prev.current.t) / 1000);
       prev.current = { x: p.x, z: p.z, t: now };
+      if (g.held) {
+        const mv = inputManager.movementVector();
+        dbg.peak.stick = Math.max(dbg.peak.stick, Math.hypot(inputManager.touchMove.x, inputManager.touchMove.y));
+        dbg.peak.player = Math.max(dbg.peak.player, Math.hypot(mv.x, mv.y));
+        dbg.peak.speed = Math.max(dbg.peak.speed, eff.current);
+      }
       tick((n) => n + 1);
-    }, 150);
+    }, 100);
     return () => {
       window.clearInterval(id);
+      window.removeEventListener('pointerdown', onDown, true);
+      window.removeEventListener('pointermove', onMove, true);
+      window.removeEventListener('pointerup', onUp, true);
+      window.removeEventListener('pointercancel', onCancel, true);
       window.removeEventListener('touchstart', count);
       window.removeEventListener('touchend', count);
       window.removeEventListener('touchcancel', count);
@@ -68,7 +117,11 @@ function TouchDebug() {
         `stick     x=${f(inputManager.touchMove.x)} y=${f(inputManager.touchMove.y)}`,
         `-> player x=${f(mv.x)} y=${f(mv.y)}  blocked=${!!(st.activePanel || st.analysisPoiId)}`,
         `moved     ${eff.current.toFixed(2)} m/s  speed=${st.telemetry.speed.toFixed(2)}  fps=${Math.round(st.telemetry.fps)}`,
-        `events    d${dbg.down} m${dbg.move} u${dbg.up} c${dbg.cancel} lost${dbg.lost} ign${dbg.ignored} last=${dbg.last}`,
+        `pad evts  enter${dbg.enter} d${dbg.down} m${dbg.move} u${dbg.up} c${dbg.cancel} lost${dbg.lost} ign${dbg.ignored} last=${dbg.last}`,
+        `window     d${dbg.g.down} m${dbg.g.move} u${dbg.g.up} c${dbg.g.cancel} held=${dbg.g.held}`,
+        `last down  ${dbg.g.type} @${dbg.g.x},${dbg.g.y} on ${dbg.g.target} inPad=${dbg.g.inZone}`,
+        `peak       stick=${dbg.peak.stick.toFixed(2)} player=${dbg.peak.player.toFixed(2)} ${dbg.peak.speed.toFixed(2)} m/s`,
+        `error      ${dbg.err}`,
         `look ${dbg.look}  touches=${dbg.touches}`,
         `view ${window.innerWidth}x${window.innerHeight} dpr=${window.devicePixelRatio} ${window.innerWidth > window.innerHeight ? 'landscape' : 'portrait'}`,
       ].join('\n')}
@@ -215,7 +268,11 @@ export function TouchControls() {
           lookPointer.current = e.pointerId;
           dbg.look = 'drag';
           lastLook.current = { x: e.clientX, y: e.clientY };
-          e.currentTarget.setPointerCapture(e.pointerId);
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch (err) {
+            dbg.err = errText(err);
+          }
         }}
         onPointerMove={(e) => {
           if (lookPointer.current !== e.pointerId) return;
@@ -251,8 +308,13 @@ export function TouchControls() {
       <div
         className="pointer-events-auto absolute bottom-[60px] left-0 top-[35%] w-[48%]"
         style={{ touchAction: 'none' }}
+        data-ow-stick=""
         onPointerDown={(e) => {
-          if (e.pointerType === 'mouse') return;
+          dbg.enter++;
+          if (e.pointerType === 'mouse') {
+            dbg.last = 'mouse-ignored';
+            return;
+          }
           // A second finger (or a palm) must not hijack the stick: it would overwrite the tracked
           // pointer and, on release, stop the movement while the first finger is still down.
           if (stickPointer.current !== null && e.currentTarget.hasPointerCapture(stickPointer.current)) {
@@ -262,13 +324,19 @@ export function TouchControls() {
           stickPointer.current = e.pointerId;
           originRef.current = { x: e.clientX, y: e.clientY };
           setOrigin(originRef.current);
-          e.currentTarget.setPointerCapture(e.pointerId);
           dbg.state = 'active';
           dbg.pointerId = e.pointerId;
           dbg.pointerType = e.pointerType;
           dbg.down++;
           dbg.last = 'down';
           updateStick(e);
+          // Capture is best effort. If the browser refuses it (it throws on some devices), the gesture
+          // must still work: touch pointers keep delivering events to the element they started on.
+          try {
+            e.currentTarget.setPointerCapture(e.pointerId);
+          } catch (err) {
+            dbg.err = errText(err);
+          }
         }}
         onPointerMove={(e) => {
           if (stickPointer.current !== e.pointerId) return;
