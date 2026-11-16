@@ -3,11 +3,23 @@ import { Camera, Crosshair, Footprints, Map as MapIcon, Pause, ScanLine, Sparkle
 import { gameSimulation } from '../../game/core/GameSimulation';
 import { inputManager } from '../../game/player/InputManager';
 import { useGameStore } from '../../stores/gameStore';
+import { Dpad } from './Dpad';
 
 const STICK_RADIUS = 42;
 // Thumb travel (px) ignored around the touch point, so a resting thumb never walks the astronaut.
 const STICK_DEADZONE = 8;
 const PAD_SIZE = 116;
+
+// Left-hand movement control: a direction pad (default, no gestures needed) or the analog stick.
+type MovePad = 'dpad' | 'stick';
+const PAD_KEY = 'olympus-walk.move-pad';
+const loadPad = (): MovePad => {
+  try {
+    return window.localStorage.getItem(PAD_KEY) === 'stick' ? 'stick' : 'dpad';
+  } catch {
+    return 'dpad';
+  }
+};
 
 // Temporary on-device diagnostics: only active with ?touchDebug=1 in the URL.
 const TOUCH_DEBUG = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('touchDebug') === '1';
@@ -114,7 +126,7 @@ function TouchDebug() {
       {[
         `JOYSTICK  ${dbg.state}  id=${dbg.pointerId ?? '-'} ${dbg.pointerType}`,
         `raw px    dx=${dbg.dx.toFixed(0)} dy=${dbg.dy.toFixed(0)}`,
-        `stick     x=${f(inputManager.touchMove.x)} y=${f(inputManager.touchMove.y)}`,
+        `stick     x=${f(inputManager.touchMove.x)} y=${f(inputManager.touchMove.y)}  dpad x=${f(inputManager.dpadMove.x)} y=${f(inputManager.dpadMove.y)}`,
         `-> player x=${f(mv.x)} y=${f(mv.y)}  blocked=${!!(st.activePanel || st.analysisPoiId)}`,
         `moved     ${eff.current.toFixed(2)} m/s  speed=${st.telemetry.speed.toFixed(2)}  fps=${Math.round(st.telemetry.fps)}`,
         `pad evts  enter${dbg.enter} d${dbg.down} m${dbg.move} u${dbg.up} c${dbg.cancel} lost${dbg.lost} ign${dbg.ignored} last=${dbg.last}`,
@@ -179,6 +191,7 @@ export function TouchControls() {
 
   const [knob, setKnob] = useState({ x: 0, y: 0 });
   const [sprinting, setSprinting] = useState(false);
+  const [pad, setPad] = useState<MovePad>(loadPad);
   // Floating stick: the centre is wherever the thumb lands, so left/right/up/down are all equally reachable.
   const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
   const originRef = useRef<{ x: number; y: number } | null>(null);
@@ -203,6 +216,15 @@ export function TouchControls() {
     dbg.pointerId = null;
   }, [hidden]);
   useEffect(() => () => inputManager.clearTouch(), []);
+  useEffect(() => {
+    if (pad === 'dpad') {
+      stickPointer.current = null;
+      originRef.current = null;
+      setOrigin(null);
+      setKnob({ x: 0, y: 0 });
+      inputManager.clearTouch();
+    }
+  }, [pad]);
 
   if (hidden) return null;
 
@@ -255,6 +277,20 @@ export function TouchControls() {
     inputManager.jumpQueued = true;
   }
 
+  const sprintButton = (
+    <ActionButton
+        icon={<Footprints size={15} />}
+        label="SPRINT"
+        active={sprinting}
+        color="#ffcf7a"
+        onPress={() => {
+          const next = !sprinting;
+          setSprinting(next);
+          inputManager.setTouchSprint(next);
+        }}
+      />
+  );
+
   return (
     <div className="pointer-events-none fixed inset-0 z-20 select-none">
       {/* Look area: drag on the right side of the screen. */}
@@ -304,109 +340,132 @@ export function TouchControls() {
         <div className="mono absolute right-4 top-4 text-ui-2xs tracking-[0.16em] text-mars-100/65">DRAG TO LOOK</div>
       </div>
 
-      {/* Thumbstick: touch zone on the left; the ring is drawn where the thumb lands. */}
-      <div
-        className="pointer-events-auto absolute bottom-[60px] left-0 top-[35%] w-[48%]"
-        style={{ touchAction: 'none' }}
-        data-ow-stick=""
-        onPointerDown={(e) => {
-          dbg.enter++;
-          if (e.pointerType === 'mouse') {
-            dbg.last = 'mouse-ignored';
-            return;
-          }
-          // A second finger (or a palm) must not hijack the stick: it would overwrite the tracked
-          // pointer and, on release, stop the movement while the first finger is still down.
-          if (stickPointer.current !== null && e.currentTarget.hasPointerCapture(stickPointer.current)) {
-            dbg.ignored++;
-            return;
-          }
-          stickPointer.current = e.pointerId;
-          originRef.current = { x: e.clientX, y: e.clientY };
-          setOrigin(originRef.current);
-          dbg.state = 'active';
-          dbg.pointerId = e.pointerId;
-          dbg.pointerType = e.pointerType;
-          dbg.down++;
-          dbg.last = 'down';
-          updateStick(e);
-          // Capture is best effort. If the browser refuses it (it throws on some devices), the gesture
-          // must still work: touch pointers keep delivering events to the element they started on.
-          try {
-            e.currentTarget.setPointerCapture(e.pointerId);
-          } catch (err) {
-            dbg.err = errText(err);
-          }
-        }}
-        onPointerMove={(e) => {
-          if (stickPointer.current !== e.pointerId) return;
-          dbg.move++;
-          dbg.last = 'move';
-          updateStick(e);
-        }}
-        onPointerUp={(e) => {
-          if (stickPointer.current !== e.pointerId) return;
-          dbg.up++;
-          dbg.last = 'up';
-          releaseStick();
-        }}
-        onPointerCancel={(e) => {
-          if (stickPointer.current !== e.pointerId) return;
-          dbg.cancel++;
-          dbg.last = 'cancel';
-          releaseStick();
-          dbg.state = 'cancelled';
-        }}
-        onLostPointerCapture={(e) => {
-          if (stickPointer.current !== e.pointerId) return;
-          dbg.lost++;
-          dbg.last = 'lostcapture';
-          releaseStick();
-        }}
-      />
-      <div
-        className={`pointer-events-none absolute rounded-full border ${origin ? '' : 'bottom-[88px] left-5'}`}
+      {pad === 'stick' ? (
+        <>
+          {/* Thumbstick: touch zone on the left; the ring is drawn where the thumb lands. */}
+          <div
+            className="pointer-events-auto absolute bottom-[60px] left-0 top-[35%] w-[48%]"
+            style={{ touchAction: 'none' }}
+            data-ow-stick=""
+            onPointerDown={(e) => {
+              dbg.enter++;
+              if (e.pointerType === 'mouse') {
+                dbg.last = 'mouse-ignored';
+                return;
+              }
+              // A second finger (or a palm) must not hijack the stick: it would overwrite the tracked
+              // pointer and, on release, stop the movement while the first finger is still down.
+              if (stickPointer.current !== null && e.currentTarget.hasPointerCapture(stickPointer.current)) {
+                dbg.ignored++;
+                return;
+              }
+              stickPointer.current = e.pointerId;
+              originRef.current = { x: e.clientX, y: e.clientY };
+              setOrigin(originRef.current);
+              dbg.state = 'active';
+              dbg.pointerId = e.pointerId;
+              dbg.pointerType = e.pointerType;
+              dbg.down++;
+              dbg.last = 'down';
+              updateStick(e);
+              // Capture is best effort. If the browser refuses it (it throws on some devices), the gesture
+              // must still work: touch pointers keep delivering events to the element they started on.
+              try {
+                e.currentTarget.setPointerCapture(e.pointerId);
+              } catch (err) {
+                dbg.err = errText(err);
+              }
+            }}
+            onPointerMove={(e) => {
+              if (stickPointer.current !== e.pointerId) return;
+              dbg.move++;
+              dbg.last = 'move';
+              updateStick(e);
+            }}
+            onPointerUp={(e) => {
+              if (stickPointer.current !== e.pointerId) return;
+              dbg.up++;
+              dbg.last = 'up';
+              releaseStick();
+            }}
+            onPointerCancel={(e) => {
+              if (stickPointer.current !== e.pointerId) return;
+              dbg.cancel++;
+              dbg.last = 'cancel';
+              releaseStick();
+              dbg.state = 'cancelled';
+            }}
+            onLostPointerCapture={(e) => {
+              if (stickPointer.current !== e.pointerId) return;
+              dbg.lost++;
+              dbg.last = 'lostcapture';
+              releaseStick();
+            }}
+          />
+          <div
+            className={`pointer-events-none absolute rounded-full border ${origin ? '' : 'bottom-[88px] left-5'}`}
+            style={{
+              width: PAD_SIZE,
+              height: PAD_SIZE,
+              ...(origin ? { left: origin.x - PAD_SIZE / 2, top: origin.y - PAD_SIZE / 2 } : {}),
+              borderColor: 'rgba(217,145,99,0.32)',
+              background: 'radial-gradient(circle, rgba(22,13,10,0.62), rgba(12,8,6,0.38))',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
+            <div className="pointer-events-none absolute inset-0 rounded-full border" style={{ borderColor: 'rgba(217,145,99,0.1)' }} />
+            <div className="pointer-events-none absolute inset-[34%] rounded-full border" style={{ borderColor: 'rgba(217,145,99,0.16)' }} />
+            <div
+              className="pointer-events-none absolute left-1/2 top-1/2 h-11 w-11 rounded-full border"
+              style={{
+                transform: `translate(calc(-50% + ${knob.x}px), calc(-50% + ${knob.y}px))`,
+                borderColor: 'rgba(143,240,210,0.55)',
+                background: 'radial-gradient(circle, rgba(143,240,210,0.2), rgba(22,13,10,0.7))',
+                boxShadow: '0 0 16px rgba(143,240,210,0.16)',
+              }}
+            />
+            {!origin && (
+              <div className="mono pointer-events-none absolute -bottom-4 left-1/2 -translate-x-1/2 text-ui-2xs tracking-[0.14em] text-mars-200/65">
+                MOVE
+              </div>
+            )}
+          </div>
+
+
+          {/* Sprint toggle */}
+          <div className="pointer-events-auto absolute bottom-[104px] left-[148px]">
+            {sprintButton}
+          </div>
+        </>
+      ) : (
+        <Dpad center={sprintButton} />
+      )}
+
+      {/* Switch between D-pad and stick */}
+      <button
+        type="button"
+        className="pad-toggle mono pointer-events-auto absolute flex h-[40px] items-center rounded-md border px-3 text-ui-2xs tracking-[0.1em]"
         style={{
-          width: PAD_SIZE,
-          height: PAD_SIZE,
-          ...(origin ? { left: origin.x - PAD_SIZE / 2, top: origin.y - PAD_SIZE / 2 } : {}),
-          borderColor: 'rgba(217,145,99,0.32)',
-          background: 'radial-gradient(circle, rgba(22,13,10,0.62), rgba(12,8,6,0.38))',
+          borderColor: 'rgba(217,145,99,0.42)',
+          background: 'rgba(15,9,7,0.62)',
+          color: 'rgba(248,221,200,0.8)',
           backdropFilter: 'blur(6px)',
+          touchAction: 'none',
+        }}
+        onPointerDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const next: MovePad = pad === 'dpad' ? 'stick' : 'dpad';
+          setPad(next);
+          try {
+            window.localStorage.setItem(PAD_KEY, next);
+          } catch {
+            /* storage unavailable: the choice just won't persist */
+          }
         }}
       >
-        <div className="pointer-events-none absolute inset-0 rounded-full border" style={{ borderColor: 'rgba(217,145,99,0.1)' }} />
-        <div className="pointer-events-none absolute inset-[34%] rounded-full border" style={{ borderColor: 'rgba(217,145,99,0.16)' }} />
-        <div
-          className="pointer-events-none absolute left-1/2 top-1/2 h-11 w-11 rounded-full border"
-          style={{
-            transform: `translate(calc(-50% + ${knob.x}px), calc(-50% + ${knob.y}px))`,
-            borderColor: 'rgba(143,240,210,0.55)',
-            background: 'radial-gradient(circle, rgba(143,240,210,0.2), rgba(22,13,10,0.7))',
-            boxShadow: '0 0 16px rgba(143,240,210,0.16)',
-          }}
-        />
-        {!origin && (
-          <div className="mono pointer-events-none absolute -bottom-4 left-1/2 -translate-x-1/2 text-ui-2xs tracking-[0.14em] text-mars-200/65">
-            MOVE
-          </div>
-        )}
-      </div>
-
-      {/* Sprint toggle */}
-      <div className="pointer-events-auto absolute bottom-[104px] left-[148px]">
-        <ActionButton
-          icon={<Footprints size={15} />}
-          label="SPRINT"
-          active={sprinting}
-          color="#ffcf7a"
-          onPress={() => {
-            const next = !sprinting;
-            setSprinting(next);
-            inputManager.setTouchSprint(next);
-          }}
-        />
-      </div>
+        {pad === 'dpad' ? 'USE STICK' : 'USE D-PAD'}
+      </button>
 
       {/* Action cluster */}
       <div className="pointer-events-auto absolute bottom-[92px] right-3 grid grid-cols-2 gap-2">

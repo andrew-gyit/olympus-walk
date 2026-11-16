@@ -425,7 +425,7 @@ export function Briefing({ missionId, onStart, onBack }: { missionId: string; on
               <div className="mt-4 glass p-3">
                 <div className="label mb-1">TOUCH CONTROLS</div>
                 <ul className="space-y-1 text-ui-md leading-relaxed text-mars-100/70">
-                  <li><b className="text-mars-100">Left stick</b> — walk and strafe sideways.</li>
+                  <li><b className="text-mars-100">Left D-pad or stick</b> — walk and strafe sideways.</li>
                   <li><b className="text-mars-100">Drag on the right</b> — look around and turn the camera.</li>
                   <li><b className="text-mars-100">On-screen buttons</b> — scan, use, hop, map and other astronaut actions.</li>
                 </ul>
