@@ -31,6 +31,8 @@ export class InputManager {
   private onLockChange: (locked: boolean) => void = () => {};
   touchMove = { x: 0, y: 0 };
   touchLook = { x: 0, y: 0 };
+  /** On-screen D-pad direction (-1..1 per axis). Separate from touchMove so the stick and the pad never clear each other. */
+  dpadMove = { x: 0, y: 0 };
   touchSprint = false;
   jumpQueued = false;
   private bound = false;
@@ -134,6 +136,8 @@ export class InputManager {
     this.keys.clear();
     this.touchMove.x = 0;
     this.touchMove.y = 0;
+    this.dpadMove.x = 0;
+    this.dpadMove.y = 0;
     this.touchSprint = false;
   };
 
@@ -232,6 +236,9 @@ export class InputManager {
     if (Math.hypot(this.touchMove.x, this.touchMove.y) > 0.08) {
       x = this.touchMove.x;
       y = this.touchMove.y;
+    } else if (this.dpadMove.x !== 0 || this.dpadMove.y !== 0) {
+      x = this.dpadMove.x;
+      y = this.dpadMove.y;
     }
     const mag = Math.hypot(x, y);
     if (mag > 1) {
@@ -252,6 +259,16 @@ export class InputManager {
   setTouchMove(x: number, y: number) {
     this.touchMove.x = x;
     this.touchMove.y = y;
+  }
+
+  setDpad(x: number, y: number) {
+    this.dpadMove.x = x;
+    this.dpadMove.y = y;
+  }
+
+  clearDpad() {
+    this.dpadMove.x = 0;
+    this.dpadMove.y = 0;
   }
 
   clearTouch() {
