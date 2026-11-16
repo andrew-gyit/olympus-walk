@@ -69,7 +69,7 @@ export function SettingsContent() {
   return (
     <div className="grid gap-5 p-5 md:grid-cols-2">
       <div>
-        <SectionTitle right={<SettingsIcon size={12} className="text-mars-300/60" />}>CONTROL</SectionTitle>
+        <SectionTitle right={<SettingsIcon size={17} className="text-mars-300/80" />}>CONTROL</SectionTitle>
         <div className="space-y-3">
           <SliderRow label="LOOK SENSITIVITY" value={settings.sensitivity} min={0.3} max={2.4} step={0.05} suffix="×" onChange={(v) => updateSettings({ sensitivity: v })} />
           <ToggleRow label="INVERT VERTICAL LOOK" value={settings.invertY} onChange={(v) => updateSettings({ invertY: v })} />
@@ -79,7 +79,7 @@ export function SettingsContent() {
       </div>
 
       <div>
-        <SectionTitle right={<Volume2 size={12} className="text-mars-300/60" />}>AUDIO & DISPLAY</SectionTitle>
+        <SectionTitle right={<Volume2 size={17} className="text-mars-300/80" />}>AUDIO & DISPLAY</SectionTitle>
         <div className="space-y-3">
           <SliderRow label="MASTER VOLUME" value={settings.volume} min={0} max={1} step={0.05} suffix="" percent onChange={changeVolume} />
           <ToggleRow label="MUTE FIELD AUDIO" value={settings.muted} onChange={(v) => updateSettings({ muted: v })} />
@@ -101,27 +101,27 @@ export function SettingsContent() {
             </button>
           ))}
         </div>
-        <p className="mt-2 text-[10px] leading-relaxed text-mars-200/40">
+        <p className="mt-2 text-ui-md leading-relaxed text-mars-200/65">
           Lower quality reduces the internal render resolution and shadow cost. It does not change the simulation.
         </p>
       </div>
 
       <div className="md:col-span-2 border-t pt-4" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-2 text-[9px]">
+          <div className="flex flex-wrap items-center gap-2 text-ui-sm">
             <DataChip kind="real" compact />
             <DataChip kind="derived" compact />
             <DataChip kind="simulation" compact />
-            <span className="mono text-mars-200/35">SETTINGS PERSIST LOCALLY</span>
+            <span className="mono text-mars-200/65">SETTINGS PERSIST LOCALLY</span>
           </div>
           <button
-            className="btn btn-ghost !py-1.5 !text-[9px]"
+            className="btn btn-ghost !py-1.5 !text-ui-sm"
             onClick={() => {
               updateSettings({ ...DEFAULT_SETTINGS });
               SaveManager.saveSettings(DEFAULT_SETTINGS);
             }}
           >
-            <RotateCcw size={11} /> RESET TO DEFAULTS
+            <RotateCcw size={16} /> RESET TO DEFAULTS
           </button>
         </div>
       </div>
@@ -151,8 +151,8 @@ function SliderRow({
   return (
     <div>
       <div className="mb-1 flex items-center justify-between">
-        <span className="label !text-[8px]">{label}</span>
-        <span className="mono text-[9px] text-mars-100/70">{percent ? `${Math.round(value * 100)}%` : `${value.toFixed(2)}${suffix ?? ''}`}</span>
+        <span className="label !text-ui-xs">{label}</span>
+        <span className="mono text-ui-sm text-mars-100/70">{percent ? `${Math.round(value * 100)}%` : `${value.toFixed(2)}${suffix ?? ''}`}</span>
       </div>
       <input
         type="range"
@@ -182,8 +182,8 @@ function ToggleRow({
   return (
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">
-        <div className="label !text-[8px]">{label}</div>
-        {hint && <div className="mt-0.5 text-[9px] leading-relaxed text-mars-200/35">{hint}</div>}
+        <div className="label !text-ui-xs">{label}</div>
+        {hint && <div className="mt-0.5 text-ui-sm leading-relaxed text-mars-200/65">{hint}</div>}
       </div>
       <button
         onClick={() => onChange(!value)}
@@ -233,7 +233,7 @@ export function ObjectivesContent() {
             <div className="display mt-1 text-xl text-mars-100">{mission.name}</div>
           </div>
           <div className="text-right">
-            <div className="mono text-2xl" style={{ color: '#8ff0d2' }}>{completed}<span className="text-sm text-mars-300/50">/{required.length}</span></div>
+            <div className="mono text-2xl" style={{ color: '#8ff0d2' }}>{completed}<span className="text-sm text-mars-300/80">/{required.length}</span></div>
             <div className="label">REQUIRED</div>
           </div>
         </div>
@@ -257,26 +257,26 @@ export function ObjectivesContent() {
                 <div className="flex items-start gap-2.5">
                   <span className="mt-0.5 shrink-0">
                     {objective.completed ? (
-                      <CheckCircle2 size={14} style={{ color: '#8ff0d2' }} />
+                      <CheckCircle2 size={18} style={{ color: '#8ff0d2' }} />
                     ) : (
-                      <Circle size={14} style={{ color: isCurrent ? '#ffcf7a' : '#8e6b57' }} />
+                      <Circle size={18} style={{ color: isCurrent ? '#ffcf7a' : '#b08a72' }} />
                     )}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="mono text-[9px] text-mars-300/55">{String(index + 1).padStart(2, '0')}</span>
-                      <span className={`text-[11px] ${objective.completed ? 'text-mars-200/55 line-through' : 'text-mars-100'}`}>{objective.label}</span>
-                      {!objective.required && <span className="chip !py-0 !text-[8px]">OPTIONAL</span>}
+                      <span className="mono text-ui-sm text-mars-300/80">{String(index + 1).padStart(2, '0')}</span>
+                      <span className={`text-ui-lg ${objective.completed ? 'text-mars-200/65 line-through' : 'text-mars-100'}`}>{objective.label}</span>
+                      {!objective.required && <span className="chip !py-0 !text-ui-xs">OPTIONAL</span>}
                       {(objective.count ?? 1) > 1 && (
-                        <span className="mono text-[8px] text-mars-200/40">{Math.min(objective.progress, objective.count ?? 1)}/{objective.count}</span>
+                        <span className="mono text-ui-xs text-mars-200/65">{Math.min(objective.progress, objective.count ?? 1)}/{objective.count}</span>
                       )}
                     </div>
-                    <div className="text-[10px] leading-relaxed text-mars-200/45">{objective.detail}</div>
+                    <div className="text-ui-md leading-relaxed text-mars-200/65">{objective.detail}</div>
                     {!objective.completed && pct > 0 && (objective.count ?? 1) > 1 && (
                       <div className="mt-1.5"><Meter value={pct} color="#ffcf7a" height={3} warn={-1} /></div>
                     )}
                     {isCurrent && objective.hint && (
-                      <div className="mt-1.5 border-l-2 pl-2 text-[9px] leading-relaxed text-warn/75" style={{ borderColor: '#ffb35c' }}>
+                      <div className="mt-1.5 border-l-2 pl-2 text-ui-sm leading-relaxed text-warn/80" style={{ borderColor: '#ffb35c' }}>
                         {objective.hint}
                       </div>
                     )}
@@ -298,31 +298,31 @@ export function ObjectivesContent() {
       <div className="space-y-4">
         <div className="glass p-3">
           <div className="label">ACTIVE GUIDANCE</div>
-          <div className="mt-1 text-[11px] leading-relaxed text-mars-100/75">
+          <div className="mt-1 text-ui-lg leading-relaxed text-mars-100/75">
             {hint?.text ?? current?.hint ?? current?.detail ?? 'All required objectives are complete. Return to Base Camp A.'}
           </div>
           {navigation.destination && (
             <div className="mt-2 flex items-center justify-between border-t pt-2" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
-              <span className="mono text-[9px] text-mars-200/50">{navigation.destinationLabel}</span>
-              <span className="mono text-[10px] text-signal">{telemetry.destinationDistance !== null ? `${Math.round(telemetry.destinationDistance)} m` : '—'}</span>
+              <span className="mono text-ui-sm text-mars-200/65">{navigation.destinationLabel}</span>
+              <span className="mono text-ui-md text-signal">{telemetry.destinationDistance !== null ? `${Math.round(telemetry.destinationDistance)} m` : '—'}</span>
             </div>
           )}
-          <button className="btn btn-ghost mt-2 w-full !py-1.5 !text-[9px]" onClick={() => openPanel('map')}>
-            <MapIcon size={11} /> OPEN WRIST MAP
+          <button className="btn btn-ghost mt-2 w-full !py-1.5 !text-ui-sm" onClick={() => openPanel('map')}>
+            <MapIcon size={16} /> OPEN WRIST MAP
           </button>
         </div>
 
         <div>
-          <SectionTitle right={<span className="mono text-[9px] text-mars-200/40">{events.length} EVENTS</span>}>FIELD LOG</SectionTitle>
+          <SectionTitle right={<span className="mono text-ui-sm text-mars-200/65">{events.length} EVENTS</span>}>FIELD LOG</SectionTitle>
           <div className="space-y-1">
-            {recent.length === 0 && <div className="text-[10px] text-mars-200/35">No events recorded yet.</div>}
+            {recent.length === 0 && <div className="text-ui-md text-mars-200/65">No events recorded yet.</div>}
             {recent.map((event) => (
-              <div key={event.id} className="border-l-2 py-1 pl-2" style={{ borderColor: LEVEL_COLOR[event.risk] ?? '#8e6b57' }}>
+              <div key={event.id} className="border-l-2 py-1 pl-2" style={{ borderColor: LEVEL_COLOR[event.risk] ?? '#b08a72' }}>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[10px] text-mars-100/85">{event.title}</span>
-                  <span className="mono text-[8px] text-mars-200/35">{new Date(event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span className="text-ui-md text-mars-100/85">{event.title}</span>
+                  <span className="mono text-ui-xs text-mars-200/65">{new Date(event.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
-                <div className="line-clamp-2 text-[9px] leading-relaxed text-mars-200/40">{event.detail}</div>
+                <div className="line-clamp-2 text-ui-sm leading-relaxed text-mars-200/65">{event.detail}</div>
               </div>
             ))}
           </div>
@@ -335,7 +335,7 @@ export function ObjectivesContent() {
 function Metric({ label, value, warn = false }: { label: string; value: string; warn?: boolean }) {
   return (
     <div className="border px-2.5 py-2" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
-      <div className="label !text-[8px]">{label}</div>
+      <div className="label !text-ui-xs">{label}</div>
       <div className="mono mt-0.5 text-sm" style={{ color: warn ? '#ff6b57' : '#f4dfcc' }}>{value}</div>
     </div>
   );
@@ -360,14 +360,14 @@ export function InventoryContent() {
     <div className="p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <ChipTab active={tab === 'samples'} onClick={() => setTab('samples')} icon={<FlaskConical size={11} />} label={`SAMPLES ${samples.length}`} />
-          <ChipTab active={tab === 'photos'} onClick={() => setTab('photos')} icon={<ImageIcon size={11} />} label={`IMAGES ${photos.length}`} />
-          <ChipTab active={tab === 'observations'} onClick={() => setTab('observations')} icon={<NotebookPen size={11} />} label={`OBSERVATIONS ${observations.length}`} />
+          <ChipTab active={tab === 'samples'} onClick={() => setTab('samples')} icon={<FlaskConical size={16} />} label={`SAMPLES ${samples.length}`} />
+          <ChipTab active={tab === 'photos'} onClick={() => setTab('photos')} icon={<ImageIcon size={16} />} label={`IMAGES ${photos.length}`} />
+          <ChipTab active={tab === 'observations'} onClick={() => setTab('observations')} icon={<NotebookPen size={16} />} label={`OBSERVATIONS ${observations.length}`} />
         </div>
         <div className="w-full max-w-xs">
           <div className="flex items-center justify-between">
             <span className="label">SAMPLE BAY</span>
-            <span className="mono text-[10px] text-mars-100/75">{used} / {capacity} units</span>
+            <span className="mono text-ui-md text-mars-100/75">{used} / {capacity} units</span>
           </div>
           <div className="mt-1"><Meter value={(used / Math.max(1, capacity)) * 100} color="#8ff0d2" warn={-1} /></div>
         </div>
@@ -382,17 +382,17 @@ export function InventoryContent() {
               {samples.map((sample) => (
                 <div key={sample.id} className="border p-3" style={{ borderColor: 'rgba(217,145,99,0.2)' }}>
                   <div className="flex items-center justify-between">
-                    <span className="mono text-[10px] text-signal">{sample.id}</span>
+                    <span className="mono text-ui-md text-signal">{sample.id}</span>
                     <DataChip kind={sample.dataClass} compact />
                   </div>
                   <div className="display mt-1 text-sm text-mars-100">{sample.name}</div>
-                  <div className="mt-1 text-[10px] text-mars-200/50">{sample.type}</div>
-                  <div className="mono mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[9px] text-mars-200/40">
+                  <div className="mt-1 text-ui-md text-mars-200/65">{sample.type}</div>
+                  <div className="mono mt-2 flex flex-wrap gap-x-3 gap-y-1 text-ui-sm text-mars-200/65">
                     <span>{sample.units} UNIT(S)</span>
                     <span>{sample.composition || 'COMPOSITION PENDING'}</span>
                   </div>
-                  <div className="mt-2 flex items-center justify-between border-t pt-1.5 text-[9px]" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
-                    <span className="mono text-mars-200/40">AT {formatClock(sample.missionTime)} · {Math.round(sample.position.x)}, {Math.round(sample.position.z)}</span>
+                  <div className="mt-2 flex items-center justify-between border-t pt-1.5 text-ui-sm" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
+                    <span className="mono text-mars-200/65">AT {formatClock(sample.missionTime)} · {Math.round(sample.position.x)}, {Math.round(sample.position.z)}</span>
                     <span className="mono" style={{ color: sample.protocolFollowed ? '#8ff0d2' : '#ffb35c' }}>
                       {sample.protocolFollowed ? 'PROTOCOL CHAIN' : 'INCOMPLETE CHAIN'}
                     </span>
@@ -413,11 +413,11 @@ export function InventoryContent() {
                   <img src={photo.dataUrl} alt={photo.caption} className="aspect-video w-full object-cover" />
                   <div className="p-2">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="mono text-[9px] text-signal">{photo.id}</span>
+                      <span className="mono text-ui-sm text-signal">{photo.id}</span>
                       <DataChip kind={photo.dataClass} compact />
                     </div>
-                    <div className="mt-1 line-clamp-2 text-[10px] leading-relaxed text-mars-100/75">{photo.caption}</div>
-                    <div className="mono mt-1 flex justify-between text-[8px] text-mars-200/35">
+                    <div className="mt-1 line-clamp-2 text-ui-md leading-relaxed text-mars-100/75">{photo.caption}</div>
+                    <div className="mono mt-1 flex justify-between text-ui-xs text-mars-200/65">
                       <span>{formatClock(photo.missionTime)}</span>
                       <span>{Math.round(photo.position.x)}, {Math.round(photo.position.z)}</span>
                     </div>
@@ -437,16 +437,16 @@ export function InventoryContent() {
                 <div key={observation.id} className="border p-3" style={{ borderColor: 'rgba(217,145,99,0.2)' }}>
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="mono text-[10px] text-signal">{observation.id}</span>
-                      <span className="text-[11px] text-mars-100">{observation.title}</span>
+                      <span className="mono text-ui-md text-signal">{observation.id}</span>
+                      <span className="text-ui-lg text-mars-100">{observation.title}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="chip !py-0 !text-[8px]">{observation.category}</span>
+                      <span className="chip !py-0 !text-ui-xs">{observation.category}</span>
                       <DataChip kind={observation.dataClass} compact />
                     </div>
                   </div>
-                  <p className="mt-1.5 text-[10px] leading-relaxed text-mars-100/65">{observation.text}</p>
-                  <div className="mono mt-1.5 flex flex-wrap justify-between gap-2 text-[8px] text-mars-200/35">
+                  <p className="mt-1.5 text-ui-md leading-relaxed text-mars-100/65">{observation.text}</p>
+                  <div className="mono mt-1.5 flex flex-wrap justify-between gap-2 text-ui-xs text-mars-200/65">
                     <span>T+{formatClock(observation.missionTime)}</span>
                     <span>{Math.round(observation.position.x)}, {Math.round(observation.position.z)}</span>
                   </div>
@@ -460,10 +460,10 @@ export function InventoryContent() {
       <div className="mt-4 flex items-center justify-between border-t pt-3" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
         <div className="flex flex-wrap gap-1.5">
           <DataChip kind="simulation" compact />
-          <span className="mono text-[9px] text-mars-200/35">FIELD RECORDS ARE FICTIONAL TRAINING DATA</span>
+          <span className="mono text-ui-sm text-mars-200/65">FIELD RECORDS ARE FICTIONAL TRAINING DATA</span>
         </div>
-        <button className="btn btn-ghost !py-1.5 !text-[9px]" onClick={() => addAlert('info', 'RECORD', 'Records are held in the local field terminal for this traverse.', 'record-note', 3000)}>
-          <FileText size={11} /> RECORD NOTE
+        <button className="btn btn-ghost !py-1.5 !text-ui-sm" onClick={() => addAlert('info', 'RECORD', 'Records are held in the local field terminal for this traverse.', 'record-note', 3000)}>
+          <FileText size={16} /> RECORD NOTE
         </button>
       </div>
     </div>
@@ -505,7 +505,7 @@ export function PPContent() {
             <div>
               <div className="label" style={{ color: '#8ff0d2' }}>PLANETARY PROTECTION / FIELD PROTOCOL</div>
               <div className="display mt-1 text-lg text-mars-100">Observe more. Disturb less.</div>
-              <p className="mt-1 max-w-2xl text-[10px] leading-relaxed text-mars-100/55">
+              <p className="mt-1 max-w-2xl text-ui-md leading-relaxed text-mars-100/65">
                 Four principles guide this traverse. Legal obligations and technical recommendations are kept distinct:
                 a treaty binds States, while COSPAR policy and NASA standards translate the obligation into technical practice.
               </p>
@@ -526,27 +526,27 @@ export function PPContent() {
         </div>
         <div className="border p-4" style={{ borderColor: 'rgba(217,145,99,0.2)' }}>
           <div className="label">ACKNOWLEDGE THE PROTOCOL</div>
-          <p className="mt-1 text-[10px] leading-relaxed text-mars-200/50">
+          <p className="mt-1 text-ui-md leading-relaxed text-mars-200/65">
             Confirm that you will protect the environment, watch for special and uncertain regions, assess terrain before moving
             and follow mission protection measures.
           </p>
           <button className="btn btn-primary mt-2 w-full !py-2" onClick={acknowledgePP} disabled={pp.protocolsAcknowledged}>
-            <ShieldCheck size={13} /> {pp.protocolsAcknowledged ? 'PROTOCOL ACTIVE' : 'ACKNOWLEDGE FOUR PRINCIPLES'}
+            <ShieldCheck size={17} /> {pp.protocolsAcknowledged ? 'PROTOCOL ACTIVE' : 'ACKNOWLEDGE FOUR PRINCIPLES'}
           </button>
           <button
-            className="btn btn-ghost mt-1 w-full !py-1.5 !text-[9px]"
+            className="btn btn-ghost mt-1 w-full !py-1.5 !text-ui-sm"
             onClick={() => updatePP(0, 'Protocol reviewed in the field terminal')}
           >
-            <BookOpen size={11} /> LOG A REVIEW
+            <BookOpen size={16} /> LOG A REVIEW
           </button>
         </div>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
-        <ChipTab active={tab === 'principles'} onClick={() => setTab('principles')} icon={<ShieldCheck size={11} />} label="PRINCIPLES" />
-        <ChipTab active={tab === 'zones'} onClick={() => setTab('zones')} icon={<ShieldAlert size={11} />} label="PRECAUTION ZONES" />
-        <ChipTab active={tab === 'legal'} onClick={() => setTab('legal')} icon={<Scale size={11} />} label="LEGAL & TECHNICAL" />
-        <ChipTab active={tab === 'sources'} onClick={() => setTab('sources')} icon={<Database size={11} />} label="DATA SOURCES" />
+        <ChipTab active={tab === 'principles'} onClick={() => setTab('principles')} icon={<ShieldCheck size={16} />} label="PRINCIPLES" />
+        <ChipTab active={tab === 'zones'} onClick={() => setTab('zones')} icon={<ShieldAlert size={16} />} label="PRECAUTION ZONES" />
+        <ChipTab active={tab === 'legal'} onClick={() => setTab('legal')} icon={<Scale size={16} />} label="LEGAL & TECHNICAL" />
+        <ChipTab active={tab === 'sources'} onClick={() => setTab('sources')} icon={<Database size={16} />} label="DATA SOURCES" />
       </div>
 
       <div className="mt-3">
@@ -574,24 +574,24 @@ export function PPContent() {
                   >
                     <span className="mono mt-0.5 text-lg" style={{ color: reviewed ? '#8ff0d2' : '#d99163' }}>{String(principle.index).padStart(2, '0')}</span>
                     <span className="min-w-0 flex-1">
-                      <span className="display block text-[11px] tracking-wide text-mars-100">{principle.title}</span>
-                      <span className="mt-0.5 block text-[9px] leading-relaxed text-mars-200/45">{principle.objective}</span>
+                      <span className="display block text-ui-lg tracking-wide text-mars-100">{principle.title}</span>
+                      <span className="mt-0.5 block text-ui-sm leading-relaxed text-mars-200/65">{principle.objective}</span>
                     </span>
-                    {reviewed ? <CheckCircle2 size={14} className="shrink-0" style={{ color: '#8ff0d2' }} /> : <Circle size={14} className="shrink-0 text-mars-300/40" />}
+                    {reviewed ? <CheckCircle2 size={18} className="shrink-0" style={{ color: '#8ff0d2' }} /> : <Circle size={18} className="shrink-0 text-mars-300/80" />}
                   </button>
                   {isOpen && (
                     <div className="border-t px-3 pb-3 pt-2" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
-                      <p className="text-[10px] leading-relaxed text-mars-100/65">{principle.summary}</p>
+                      <p className="text-ui-md leading-relaxed text-mars-100/65">{principle.summary}</p>
                       <ul className="mt-2 space-y-1">
                         {principle.measures.map((measure) => (
-                          <li key={measure} className="flex gap-1.5 text-[9px] leading-relaxed text-mars-200/50">
+                          <li key={measure} className="flex gap-1.5 text-ui-sm leading-relaxed text-mars-200/65">
                             <span className="mt-1 h-1 w-1 shrink-0 bg-mars-300/60" /> {measure}
                           </li>
                         ))}
                       </ul>
                       <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t pt-2" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
-                        <span className="mono text-[8px] leading-relaxed text-mars-200/35">{principle.source}</span>
-                        <span className={`chip !py-0 !text-[8px] ${principle.classification === 'legal obligation' ? 'chip-warn' : ''}`}>{principle.classification.toUpperCase()}</span>
+                        <span className="mono text-ui-xs leading-relaxed text-mars-200/65">{principle.source}</span>
+                        <span className={`chip !py-0 !text-ui-xs ${principle.classification === 'legal obligation' ? 'chip-warn' : ''}`}>{principle.classification.toUpperCase()}</span>
                       </div>
                     </div>
                   )}
@@ -617,25 +617,25 @@ export function PPContent() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="mono text-[9px] tracking-[0.16em]" style={{ color }}>{zone.code}</div>
+                      <div className="mono text-ui-sm tracking-[0.16em]" style={{ color }}>{zone.code}</div>
                       <div className="display mt-0.5 text-sm text-mars-100">{zone.name}</div>
                     </div>
                     <DataChip kind={zone.dataClass} compact />
                   </div>
                   <div className="mt-1.5 flex flex-wrap gap-1">
-                    <span className={`chip !py-0 !text-[8px] ${zone.access === 'observe-only' ? 'chip-danger' : zone.access === 'restricted' ? 'chip-warn' : ''}`}>{zone.access.replace(/-/g, ' ').toUpperCase()}</span>
-                    <span className="chip !py-0 !text-[8px]">R {zone.radius} m</span>
-                    {zone.categories.map((c) => <span key={c} className="chip !py-0 !text-[8px]">{c}</span>)}
+                    <span className={`chip !py-0 !text-ui-xs ${zone.access === 'observe-only' ? 'chip-danger' : zone.access === 'restricted' ? 'chip-warn' : ''}`}>{zone.access.replace(/-/g, ' ').toUpperCase()}</span>
+                    <span className="chip !py-0 !text-ui-xs">R {zone.radius} m</span>
+                    {zone.categories.map((c) => <span key={c} className="chip !py-0 !text-ui-xs">{c}</span>)}
                   </div>
-                  <p className="mt-2 text-[10px] leading-relaxed text-mars-100/60">{zone.description}</p>
+                  <p className="mt-2 text-ui-md leading-relaxed text-mars-100/65">{zone.description}</p>
                   <ul className="mt-2 space-y-1">
                     {zone.measures.map((measure) => (
-                      <li key={measure} className="flex gap-1.5 text-[9px] leading-relaxed text-mars-200/48">
+                      <li key={measure} className="flex gap-1.5 text-ui-sm leading-relaxed text-mars-200/65">
                         <span className="mt-1 h-1 w-1 shrink-0" style={{ background: color }} /> {measure}
                       </li>
                     ))}
                   </ul>
-                  <div className="mono mt-2 border-t pt-1.5 text-[8px] leading-relaxed text-mars-200/30" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
+                  <div className="mono mt-2 border-t pt-1.5 text-ui-xs leading-relaxed text-mars-200/65" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
                     SOURCE: {zone.source}
                   </div>
                 </div>
@@ -648,7 +648,7 @@ export function PPContent() {
           <div className="space-y-2">
             <div className="border-l-2 p-3" style={{ borderColor: '#ffcf7a', background: 'rgba(92,57,19,0.12)' }}>
               <div className="label" style={{ color: '#ffcf7a' }}>LEGAL OBLIGATION VS TECHNICAL RECOMMENDATION</div>
-              <p className="mt-1 text-[10px] leading-relaxed text-mars-100/62">
+              <p className="mt-1 text-ui-md leading-relaxed text-mars-100/65">
                 The Outer Space Treaty is a binding instrument between States. COSPAR policy, NASA standards and handbooks are
                 technical implementation guidance. This simulator translates both into field mechanics for education; it does not
                 make legal determinations or certify compliance.
@@ -658,15 +658,15 @@ export function PPContent() {
               <div key={source.id} className="border p-3" style={{ borderColor: 'rgba(217,145,99,0.2)' }}>
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <div className="text-[11px] text-mars-100">{source.title}</div>
-                    <div className="mono mt-0.5 text-[9px] text-mars-200/40">{source.year} · {source.type.toUpperCase()}</div>
+                    <div className="text-ui-lg text-mars-100">{source.title}</div>
+                    <div className="mono mt-0.5 text-ui-sm text-mars-200/65">{source.year} · {source.type.toUpperCase()}</div>
                   </div>
-                  <a href={source.url} target="_blank" rel="noreferrer" className="btn btn-ghost !px-2 !py-1 !text-[8px]">
-                    SOURCE <ExternalLink size={10} />
+                  <a href={source.url} target="_blank" rel="noreferrer" className="btn btn-ghost !px-2 !py-1 !text-ui-xs">
+                    SOURCE <ExternalLink size={15} />
                   </a>
                 </div>
-                <p className="mt-1.5 text-[10px] leading-relaxed text-mars-100/60">{source.relevance}</p>
-                <div className="mt-1.5 text-[9px] leading-relaxed text-mars-200/35">{source.note}</div>
+                <p className="mt-1.5 text-ui-md leading-relaxed text-mars-100/65">{source.relevance}</p>
+                <div className="mt-1.5 text-ui-sm leading-relaxed text-mars-200/65">{source.note}</div>
               </div>
             ))}
           </div>
@@ -680,13 +680,13 @@ export function PPContent() {
                 {DATA_SOURCES.map((source) => (
                   <div key={source.name} className="border p-2.5" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] text-mars-100">{source.name}</span>
+                      <span className="text-ui-md text-mars-100">{source.name}</span>
                       <DataChip kind={source.dataClass} compact />
                     </div>
-                    <div className="mono mt-0.5 text-[8px] text-mars-200/40">{source.provider} · {source.types.join(' / ')}</div>
-                    <div className="mt-1 text-[9px] leading-relaxed text-mars-200/45">{source.status}</div>
-                    <a href={source.url} target="_blank" rel="noreferrer" className="mono mt-1 inline-flex items-center gap-1 text-[8px] text-ice/80 hover:underline">
-                      OPEN REFERENCE <ExternalLink size={9} />
+                    <div className="mono mt-0.5 text-ui-xs text-mars-200/65">{source.provider} · {source.types.join(' / ')}</div>
+                    <div className="mt-1 text-ui-sm leading-relaxed text-mars-200/65">{source.status}</div>
+                    <a href={source.url} target="_blank" rel="noreferrer" className="mono mt-1 inline-flex items-center gap-1 text-ui-xs text-ice/80 hover:underline">
+                      OPEN REFERENCE <ExternalLink size={14} />
                     </a>
                   </div>
                 ))}
@@ -698,16 +698,16 @@ export function PPContent() {
                 {REAL_VS_SIM.map((row) => (
                   <div key={row.id} className="glass p-3">
                     <DataChip kind={row.id as keyof typeof DATA_LABELS} />
-                    <p className="mt-1.5 text-[10px] leading-relaxed text-mars-200/50">{row.body}</p>
+                    <p className="mt-1.5 text-ui-md leading-relaxed text-mars-200/65">{row.body}</p>
                   </div>
                 ))}
               </div>
               <div className="mt-3 border p-3" style={{ borderColor: 'rgba(255,107,87,0.3)' }}>
                 <div className="flex items-center gap-2 text-danger">
-                  <TriangleAlert size={12} />
-                  <span className="mono text-[9px] tracking-[0.14em]">SCIENTIFIC NOTICE</span>
+                  <TriangleAlert size={17} />
+                  <span className="mono text-ui-sm tracking-[0.14em]">SCIENTIFIC NOTICE</span>
                 </div>
-                <p className="mt-1.5 text-[9px] leading-relaxed text-mars-200/50">{DISCLAIMER}</p>
+                <p className="mt-1.5 text-ui-sm leading-relaxed text-mars-200/65">{DISCLAIMER}</p>
               </div>
             </div>
           </div>
@@ -716,11 +716,11 @@ export function PPContent() {
 
       <div className="mt-4 grid gap-2 md:grid-cols-2">
         <div>
-          <SectionTitle right={<ShieldAlert size={12} className="text-mars-300/60" />}>COMPLIANCE ACTIONS</SectionTitle>
+          <SectionTitle right={<ShieldAlert size={17} className="text-mars-300/80" />}>COMPLIANCE ACTIONS</SectionTitle>
           <div className="max-h-44 space-y-1 overflow-y-auto scroll-area pr-1">
-            {actions.length === 0 && <div className="text-[10px] text-mars-200/35">No protocol actions recorded.</div>}
+            {actions.length === 0 && <div className="text-ui-md text-mars-200/65">No protocol actions recorded.</div>}
             {actions.map((action) => (
-              <div key={action.id} className="flex items-center justify-between gap-2 border-b py-1 text-[9px]" style={{ borderColor: 'rgba(217,145,99,0.12)' }}>
+              <div key={action.id} className="flex items-center justify-between gap-2 border-b py-1 text-ui-sm" style={{ borderColor: 'rgba(217,145,99,0.12)' }}>
                 <span className="text-mars-100/70">{action.label}</span>
                 <span className="mono shrink-0" style={{ color: action.points >= 0 ? '#8ff0d2' : '#ff6b57' }}>{action.points >= 0 ? '+' : ''}{action.points}</span>
               </div>
@@ -728,8 +728,8 @@ export function PPContent() {
           </div>
         </div>
         <div>
-          <SectionTitle right={<Gauge size={12} className="text-mars-300/60" />}>PROTOCOL NOTES</SectionTitle>
-          <div className="space-y-1.5 text-[9px] leading-relaxed text-mars-200/45">
+          <SectionTitle right={<Gauge size={17} className="text-mars-300/80" />}>PROTOCOL NOTES</SectionTitle>
+          <div className="space-y-1.5 text-ui-sm leading-relaxed text-mars-200/65">
             <div>Observation-only regions: {ZONES.filter((z) => z.access === 'observe-only').map((z) => z.code).join(' · ') || 'none'}.</div>
             <div>Observation in a sensitive zone is a positive action. A blocked sampling attempt is logged as an incident.</div>
             <div>Unknown or ambiguous terrain is treated with the precautionary approach until evidence is sufficient.</div>
@@ -744,8 +744,8 @@ export function PPContent() {
 function SmallMetric({ label, value, good = false, warn = false }: { label: string; value: string; good?: boolean; warn?: boolean }) {
   return (
     <div className="border px-2 py-1.5" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
-      <div className="label !text-[7px]">{label}</div>
-      <div className="mono mt-0.5 text-[10px]" style={{ color: warn ? '#ff6b57' : good ? '#8ff0d2' : '#f4dfcc' }}>{value}</div>
+      <div className="label !text-ui-2xs">{label}</div>
+      <div className="mono mt-0.5 text-ui-md" style={{ color: warn ? '#ff6b57' : good ? '#8ff0d2' : '#f4dfcc' }}>{value}</div>
     </div>
   );
 }
@@ -799,19 +799,19 @@ export function AnalysisContent() {
     <div className="p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="mono text-[10px] tracking-[0.2em]" style={{ color: '#d99163' }}>{poi.code} · {poi.type.toUpperCase()}</div>
+          <div className="mono text-ui-md tracking-[0.2em]" style={{ color: '#d99163' }}>{poi.code} · {poi.type.toUpperCase()}</div>
           <div className="display mt-1 text-xl text-mars-100">{poi.name}</div>
           <div className="mt-1 flex flex-wrap items-center gap-1.5">
             <DataChip kind="simulation" compact />
-            {isScanned && <span className="chip chip-signal !py-0 !text-[8px]">SCANNED</span>}
-            {isAnalyzed && <span className="chip chip-signal !py-0 !text-[8px]">ANALYZED</span>}
-            {isCollected && <span className="chip !py-0 !text-[8px]">SAMPLE SEALED</span>}
-            {observeOnly && <span className="chip chip-danger !py-0 !text-[8px]">OBSERVE ONLY</span>}
+            {isScanned && <span className="chip chip-signal !py-0 !text-ui-xs">SCANNED</span>}
+            {isAnalyzed && <span className="chip chip-signal !py-0 !text-ui-xs">ANALYZED</span>}
+            {isCollected && <span className="chip !py-0 !text-ui-xs">SAMPLE SEALED</span>}
+            {observeOnly && <span className="chip chip-danger !py-0 !text-ui-xs">OBSERVE ONLY</span>}
           </div>
         </div>
         <div className="text-right">
-          <div className="mono text-[10px] text-mars-200/50">{distance.toFixed(1)} m AWAY</div>
-          <div className="mono mt-1 text-2xl" style={{ color: poi.analysis.interest === 'exceptional' ? '#8ff0d2' : '#ffcf7a' }}>{poi.analysis.confidence}<span className="text-xs text-mars-300/50">%</span></div>
+          <div className="mono text-ui-md text-mars-200/65">{distance.toFixed(1)} m AWAY</div>
+          <div className="mono mt-1 text-2xl" style={{ color: poi.analysis.interest === 'exceptional' ? '#8ff0d2' : '#ffcf7a' }}>{poi.analysis.confidence}<span className="text-xs text-mars-300/80">%</span></div>
           <div className="label">CONFIDENCE</div>
         </div>
       </div>
@@ -820,8 +820,8 @@ export function AnalysisContent() {
 
       <div className="mt-4 grid gap-4 md:grid-cols-[1.15fr_0.85fr]">
         <div>
-          <SectionTitle right={<Microscope size={12} className="text-mars-300/60" />}>FIELD ANALYSIS</SectionTitle>
-          <div className="space-y-2 text-[11px] leading-relaxed text-mars-100/72">
+          <SectionTitle right={<Microscope size={17} className="text-mars-300/80" />}>FIELD ANALYSIS</SectionTitle>
+          <div className="space-y-2 text-ui-lg leading-relaxed text-mars-100/72">
             <div><span className="label mr-2">CLASS</span>{poi.analysis.classification}</div>
             <div><span className="label mr-2">FORMATION</span>{poi.analysis.formationType}</div>
             <div><span className="label mr-2">OBSERVED</span>{poi.analysis.observed}</div>
@@ -835,9 +835,9 @@ export function AnalysisContent() {
           </div>
           <div className="mt-3 border-l-2 p-2.5" style={{ borderColor: observeOnly ? '#ffb35c' : '#8ff0d2', background: observeOnly ? 'rgba(92,57,19,0.16)' : 'rgba(28,74,64,0.14)' }}>
             <div className="label" style={{ color: observeOnly ? '#ffb35c' : '#8ff0d2' }}>PLANETARY PROTECTION NOTE</div>
-            <p className="mt-1 text-[10px] leading-relaxed text-mars-100/70">{poi.analysis.ppNote}</p>
+            <p className="mt-1 text-ui-md leading-relaxed text-mars-100/70">{poi.analysis.ppNote}</p>
             {zone && (
-              <div className="mono mt-1.5 border-t pt-1.5 text-[8px] leading-relaxed text-mars-200/40" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
+              <div className="mono mt-1.5 border-t pt-1.5 text-ui-xs leading-relaxed text-mars-200/65" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
                 {zone.code} · {zone.name} · {zone.access.toUpperCase()} · {zone.dataClass.toUpperCase()}
               </div>
             )}
@@ -845,7 +845,7 @@ export function AnalysisContent() {
         </div>
 
         <div>
-          <SectionTitle right={<Camera size={12} className="text-mars-300/60" />}>FIELD ACTIONS</SectionTitle>
+          <SectionTitle right={<Camera size={17} className="text-mars-300/80" />}>FIELD ACTIONS</SectionTitle>
           <div className="grid gap-1.5">
             {!isAnalyzed && (
               <button
@@ -854,7 +854,7 @@ export function AnalysisContent() {
                 disabled={resources.battery < RESOURCES.batteryAnalyze}
                 title={resources.battery < RESOURCES.batteryAnalyze ? 'Insufficient battery' : 'Run the geological analyzer'}
               >
-                <FlaskConical size={13} /> RUN ANALYZER <span className="mono text-[8px] opacity-60">E</span>
+                <FlaskConical size={17} /> RUN ANALYZER <span className="mono text-ui-xs opacity-60">E</span>
               </button>
             )}
             {poi.canSample && (
@@ -864,20 +864,20 @@ export function AnalysisContent() {
                 disabled={!isAnalyzed || isCollected || observeOnly || resources.inventoryUsed >= resources.inventoryCapacity}
                 title={observeOnly ? 'Sampling is not permitted in an observation-only region.' : 'Collect a sealed sample'}
               >
-                <Layers size={13} /> {isCollected ? 'SAMPLE SEALED' : observeOnly ? 'SAMPLING NOT PERMITTED' : 'COLLECT SAMPLE'}
+                <Layers size={17} /> {isCollected ? 'SAMPLE SEALED' : observeOnly ? 'SAMPLING NOT PERMITTED' : 'COLLECT SAMPLE'}
               </button>
             )}
             <button className="btn !py-2" onClick={observe}>
-              <NotebookPen size={13} /> {observeOnly ? 'RECORD PERIMETER OBSERVATION' : 'LOG OBSERVATION'}
+              <NotebookPen size={17} /> {observeOnly ? 'RECORD PERIMETER OBSERVATION' : 'LOG OBSERVATION'}
             </button>
             <button className="btn !py-2" onClick={capturePhoto}>
-              <Camera size={13} /> CAPTURE PHOTOGRAPH
+              <Camera size={17} /> CAPTURE PHOTOGRAPH
             </button>
             <button className="btn btn-ghost !py-2" onClick={planRoute}>
-              <Compass size={13} /> ROUTE TO TARGET
+              <Compass size={17} /> ROUTE TO TARGET
             </button>
             <button className="btn btn-ghost !py-2" onClick={closeAnalysis}>
-              <ArrowRight size={13} /> RETURN TO TRAVERSE
+              <ArrowRight size={17} /> RETURN TO TRAVERSE
             </button>
           </div>
 
@@ -890,7 +890,7 @@ export function AnalysisContent() {
             </div>
           </div>
 
-          <div className="mt-2 text-[9px] leading-relaxed text-mars-200/35">
+          <div className="mt-2 text-ui-sm leading-relaxed text-mars-200/65">
             {poi.description}
           </div>
         </div>
@@ -899,9 +899,9 @@ export function AnalysisContent() {
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t pt-3" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
         <div className="flex flex-wrap items-center gap-2">
           <DataChip kind="derived" compact />
-          <span className="mono text-[8px] text-mars-200/30">CONFIDENCE IS A TRAINING VALUE, NOT A LABORATORY MEASUREMENT</span>
+          <span className="mono text-ui-xs text-mars-200/65">CONFIDENCE IS A TRAINING VALUE, NOT A LABORATORY MEASUREMENT</span>
         </div>
-        <span className="mono text-[8px] text-mars-200/30">BATTERY {Math.round(resources.battery)}% · INVENTORY {resources.inventoryUsed}/{resources.inventoryCapacity}</span>
+        <span className="mono text-ui-xs text-mars-200/65">BATTERY {Math.round(resources.battery)}% · INVENTORY {resources.inventoryUsed}/{resources.inventoryCapacity}</span>
       </div>
     </div>
   );
@@ -910,10 +910,10 @@ export function AnalysisContent() {
 function ChainStep({ done, label, detail }: { done: boolean; label: string; detail: string }) {
   return (
     <div className="flex items-start gap-2">
-      {done ? <CheckCircle2 size={12} className="mt-0.5 shrink-0" style={{ color: '#8ff0d2' }} /> : <Circle size={12} className="mt-0.5 shrink-0 text-mars-300/40" />}
+      {done ? <CheckCircle2 size={17} className="mt-0.5 shrink-0" style={{ color: '#8ff0d2' }} /> : <Circle size={17} className="mt-0.5 shrink-0 text-mars-300/80" />}
       <div className="min-w-0">
-        <div className="mono text-[9px]" style={{ color: done ? '#8ff0d2' : 'rgba(226,178,141,0.6)' }}>{label}</div>
-        <div className="text-[8px] leading-relaxed text-mars-200/35">{detail}</div>
+        <div className="mono text-ui-sm" style={{ color: done ? '#8ff0d2' : 'rgba(232,186,150,0.88)' }}>{label}</div>
+        <div className="text-ui-xs leading-relaxed text-mars-200/65">{detail}</div>
       </div>
     </div>
   );
@@ -925,14 +925,14 @@ export function HelpPanel() {
   return (
     <div className="grid gap-5 p-5 md:grid-cols-2">
       <div>
-        <SectionTitle right={<BookOpen size={12} className="text-mars-300/60" />}>FIELD CONTROLS</SectionTitle>
+        <SectionTitle right={<BookOpen size={17} className="text-mars-300/80" />}>FIELD CONTROLS</SectionTitle>
         <div className="space-y-1">
           {CONTROL_HELP.map((row) => (
             <div key={row.keys} className="flex items-start gap-2.5 border-b py-1.5" style={{ borderColor: 'rgba(217,145,99,0.1)' }}>
               <span className="kbd w-24 shrink-0 justify-center">{row.keys}</span>
               <div className="min-w-0">
-                <div className="text-[10px] text-mars-100">{row.action}</div>
-                <div className="text-[9px] leading-relaxed text-mars-200/40">{row.note}</div>
+                <div className="text-ui-md text-mars-100">{row.action}</div>
+                <div className="text-ui-sm leading-relaxed text-mars-200/65">{row.note}</div>
               </div>
             </div>
           ))}
@@ -941,7 +941,7 @@ export function HelpPanel() {
       <div className="space-y-4">
         <div>
           <SectionTitle>FIELD METHOD</SectionTitle>
-          <ol className="space-y-2 text-[10px] leading-relaxed text-mars-100/65">
+          <ol className="space-y-2 text-ui-md leading-relaxed text-mars-100/65">
             <li><span className="mono text-signal">01</span> Scan before you approach. The scanner reveals contacts inside 85 m.</li>
             <li><span className="mono text-signal">02</span> Analyze at close range. Analysis creates a field observation.</li>
             <li><span className="mono text-signal">03</span> Sample only after analysis. Scan → analyze → sample preserves the record chain.</li>
@@ -954,7 +954,7 @@ export function HelpPanel() {
           {(Object.keys(DATA_LABELS) as Array<keyof typeof DATA_LABELS>).map((key) => (
             <div key={key} className="mb-1.5 glass px-3 py-2">
               <DataChip kind={key} compact />
-              <p className="mt-1 text-[9px] leading-relaxed text-mars-200/45">
+              <p className="mt-1 text-ui-sm leading-relaxed text-mars-200/65">
                 {key === 'real'
                   ? 'Published datasets and archives. No NASA raster tiles are bundled in this offline build.'
                   : key === 'derived'
@@ -964,7 +964,7 @@ export function HelpPanel() {
             </div>
           ))}
         </div>
-        <p className="text-[9px] leading-relaxed text-mars-200/35">{DISCLAIMER}</p>
+        <p className="text-ui-sm leading-relaxed text-mars-200/65">{DISCLAIMER}</p>
       </div>
     </div>
   );
@@ -1080,7 +1080,7 @@ function PauseMenu() {
       code={mission?.code ?? 'OW'}
       onClose={resumeGame}
       width="max-w-2xl"
-      headerRight={<span className="mono text-[9px] text-mars-200/40">SIMULATION HELD</span>}
+      headerRight={<span className="mono text-ui-sm text-mars-200/65">SIMULATION HELD</span>}
     >
       <div className="p-5">
         <div className="flex flex-wrap items-end justify-between gap-3 border-b pb-3" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
@@ -1088,7 +1088,7 @@ function PauseMenu() {
             <div className="label">{mission ? `${mission.code} · ACTIVE TRAVERSE` : 'NO ACTIVE TRAVERSE'}</div>
             <div className="display mt-1 text-lg text-mars-100">{mission?.name ?? 'Olympus Walk'}</div>
           </div>
-          <div className="mono text-right text-[9px] leading-relaxed text-mars-200/45">
+          <div className="mono text-right text-ui-sm leading-relaxed text-mars-200/65">
             <div>{formatDuration(mission?.elapsed ?? 0)} ELAPSED</div>
             <div>{Math.round(mission?.distanceWalked ?? 0)} m WALKED</div>
             <div>O2 {Math.round(resources.oxygen)}% · PWR {Math.round(resources.battery)}%</div>
@@ -1097,21 +1097,21 @@ function PauseMenu() {
 
         <div className="mt-4 grid gap-1.5 sm:grid-cols-2">
           <button className="btn btn-primary !justify-start !py-2.5 sm:col-span-2" onClick={resumeGame}>
-            <Play size={14} /> RESUME TRAVERSE
+            <Play size={18} /> RESUME TRAVERSE
           </button>
-          <button className="btn !justify-start" onClick={() => openPanel('map')}><MapIcon size={13} /> WRIST MAP</button>
-          <button className="btn !justify-start" onClick={() => openPanel('objectives')}><CheckCircle2 size={13} /> OBJECTIVES</button>
-          <button className="btn !justify-start" onClick={() => openPanel('inventory')}><FlaskConical size={13} /> INVENTORY</button>
-          <button className="btn !justify-start" onClick={() => openPanel('pp')}><ShieldCheck size={13} /> PLANETARY PROTECTION</button>
-          <button className="btn !justify-start" onClick={() => openPanel('settings')}><SettingsIcon size={13} /> SETTINGS</button>
-          <button className="btn !justify-start" onClick={() => openPanel('help')}><BookOpen size={13} /> FIELD MANUAL</button>
+          <button className="btn !justify-start" onClick={() => openPanel('map')}><MapIcon size={17} /> WRIST MAP</button>
+          <button className="btn !justify-start" onClick={() => openPanel('objectives')}><CheckCircle2 size={17} /> OBJECTIVES</button>
+          <button className="btn !justify-start" onClick={() => openPanel('inventory')}><FlaskConical size={17} /> INVENTORY</button>
+          <button className="btn !justify-start" onClick={() => openPanel('pp')}><ShieldCheck size={17} /> PLANETARY PROTECTION</button>
+          <button className="btn !justify-start" onClick={() => openPanel('settings')}><SettingsIcon size={17} /> SETTINGS</button>
+          <button className="btn !justify-start" onClick={() => openPanel('help')}><BookOpen size={17} /> FIELD MANUAL</button>
         </div>
 
         <div className="mt-4 border-t pt-3" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
           <div className="label mb-2">TRAVERSE CONTROL</div>
           <div className="grid gap-1.5 sm:grid-cols-2">
             <button className="btn btn-ghost !justify-start" onClick={() => { saveNow(); returnToMenu(); }}>
-              <Pause size={13} /> SAVE & EXIT TO MENU
+              <Pause size={17} /> SAVE & EXIT TO MENU
             </button>
             <button
               className="btn btn-danger !justify-start"
@@ -1120,7 +1120,7 @@ function PauseMenu() {
                 else setConfirm('abort');
               }}
             >
-              <TriangleAlert size={13} /> {confirm === 'abort' ? 'CONFIRM ABORT — END TRAVERSE' : 'ABORT TRAVERSE'}
+              <TriangleAlert size={17} /> {confirm === 'abort' ? 'CONFIRM ABORT — END TRAVERSE' : 'ABORT TRAVERSE'}
             </button>
             <button
               className="btn btn-danger !justify-start sm:col-span-2"
@@ -1129,10 +1129,10 @@ function PauseMenu() {
                 else setConfirm('restart');
               }}
             >
-              <RotateCcw size={13} /> {confirm === 'restart' ? 'CONFIRM RESTART — LOSE CURRENT PROGRESS' : 'RESTART MISSION FROM CAMP'}
+              <RotateCcw size={17} /> {confirm === 'restart' ? 'CONFIRM RESTART — LOSE CURRENT PROGRESS' : 'RESTART MISSION FROM CAMP'}
             </button>
           </div>
-          <div className="mono mt-2 text-[8px] leading-relaxed tracking-[0.1em] text-mars-200/30">
+          <div className="mono mt-2 text-ui-xs leading-relaxed tracking-[0.1em] text-mars-200/65">
             {decide.quality.toUpperCase()} QUALITY · HUD {Math.round(decide.hudScale * 100)}% · {decide.muted ? 'AUDIO MUTED' : `VOLUME ${Math.round(decide.volume * 100)}%`}
           </div>
         </div>

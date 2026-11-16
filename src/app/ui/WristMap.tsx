@@ -297,6 +297,10 @@ export function WristMapContent() {
     if (!ctx) return;
     const W = canvas.width;
     const H = canvas.height;
+    // The canvas is drawn at a fixed 760px and shown scaled to fit the panel (≈0.6x on a laptop),
+    // so text is scaled back up to stay about 13px on screen.
+    const shown = canvas.getBoundingClientRect().width || W;
+    const font = (px: number, bold = false) => `${bold ? 'bold ' : ''}${Math.round(px * 1.3 * (W / shown))}px Consolas, monospace`;
     const spanX = view.maxX - view.minX;
     const spanZ = view.maxZ - view.minZ;
     const w2c = (x: number, z: number) => [
@@ -330,7 +334,7 @@ export function WristMapContent() {
 
     // Coordinate grid.
     const spacing = zoom === 'local' ? 25 : 50;
-    ctx.font = '10px Consolas, monospace';
+    ctx.font = font(10);
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     for (let x = Math.ceil(view.minX / spacing) * spacing; x <= view.maxX; x += spacing) {
@@ -342,7 +346,7 @@ export function WristMapContent() {
       ctx.lineTo(px, H);
       ctx.stroke();
       if (x % (spacing * 2) === 0) {
-        ctx.fillStyle = 'rgba(226,178,141,0.42)';
+        ctx.fillStyle = 'rgba(232,186,150,0.78)';
         ctx.fillText(`${Math.round(x)}`, px + 3, 3);
       }
     }
@@ -355,7 +359,7 @@ export function WristMapContent() {
       ctx.lineTo(W, py);
       ctx.stroke();
       if (z % (spacing * 2) === 0) {
-        ctx.fillStyle = 'rgba(226,178,141,0.42)';
+        ctx.fillStyle = 'rgba(232,186,150,0.78)';
         ctx.fillText(`${Math.round(z)}`, 3, py + 2);
       }
     }
@@ -379,7 +383,7 @@ export function WristMapContent() {
         ctx.fillStyle = `${LEVEL_COLOR[zone.level] ?? '#d99163'}12`;
         ctx.fill();
       }
-      ctx.font = 'bold 10px Consolas, monospace';
+      ctx.font = font(10, true);
       ctx.fillStyle = LEVEL_COLOR[zone.level] ?? '#d99163';
       ctx.textAlign = 'center';
       ctx.fillText(zone.code, cx, cy - r - 12);
@@ -397,10 +401,10 @@ export function WristMapContent() {
       ctx.rect(cx - 7, cy - 7, 14, 14);
       ctx.fill();
       ctx.stroke();
-      ctx.font = 'bold 10px Consolas, monospace';
+      ctx.font = font(10, true);
       ctx.fillStyle = '#8ff0d2';
       ctx.textAlign = 'center';
-      ctx.fillText('BC-A', cx, cy + 21);
+      ctx.fillText('BC-A', cx, cy + 30);
       ctx.textAlign = 'left';
     }
 
@@ -489,7 +493,7 @@ export function WristMapContent() {
         ctx.stroke();
       }
       if (zoom === 'local' || focused) {
-        ctx.font = focused ? 'bold 11px Consolas, monospace' : '9px Consolas, monospace';
+        ctx.font = focused ? font(11, true) : font(9);
         ctx.fillStyle = focused ? '#fff3e2' : 'rgba(246,226,205,0.82)';
         ctx.textAlign = 'center';
         ctx.fillText(poi.code, px, py - (focused ? 16 : 12));
@@ -538,9 +542,9 @@ export function WristMapContent() {
     ctx.moveTo(18 + barPx, by - 4);
     ctx.lineTo(18 + barPx, by + 4);
     ctx.stroke();
-    ctx.font = '10px Consolas, monospace';
+    ctx.font = font(10);
     ctx.fillStyle = 'rgba(246,226,205,0.75)';
-    ctx.fillText(`${barMeters} m`, 20, by - 16);
+    ctx.fillText(`${barMeters} m`, 20, by - 24);
 
     ctx.strokeStyle = 'rgba(246,226,205,0.55)';
     ctx.lineWidth = 1.2;
@@ -551,7 +555,7 @@ export function WristMapContent() {
     ctx.lineTo(W - 28, 18);
     ctx.lineTo(W - 23, 26);
     ctx.stroke();
-    ctx.font = 'bold 10px Consolas, monospace';
+    ctx.font = font(10, true);
     ctx.fillStyle = 'rgba(246,226,205,0.65)';
     ctx.textAlign = 'center';
     ctx.fillText('N', W - 28, 58);
@@ -653,14 +657,14 @@ export function WristMapContent() {
               onClick={() => setZoom('zone')}
               title="Show the whole exploration zone"
             >
-              <ZoomOut size={12} /> ZONE
+              <ZoomOut size={17} /> ZONE
             </button>
             <button
               className={`btn !px-2 !py-1 ${zoom === 'local' ? 'btn-primary' : 'btn-ghost'}`}
               onClick={() => setZoom('local')}
               title="Show a local window around the astronaut"
             >
-              <ZoomIn size={12} /> LOCAL
+              <ZoomIn size={17} /> LOCAL
             </button>
             <button
               className="btn btn-ghost !px-2 !py-1"
@@ -670,7 +674,7 @@ export function WristMapContent() {
               }}
               title="Centre on the astronaut"
             >
-              <LocateFixed size={12} />
+              <LocateFixed size={17} />
             </button>
           </div>
         </div>
@@ -683,19 +687,19 @@ export function WristMapContent() {
             className="mx-auto block h-full max-h-[62vh] w-auto max-w-full cursor-crosshair border"
             style={{ borderColor: 'rgba(217,145,99,0.25)', imageRendering: 'auto' }}
           />
-          <div className="mono pointer-events-none absolute bottom-5 left-6 flex flex-wrap items-center gap-2 text-[9px] tracking-[0.12em] text-mars-100/50">
+          <div className="mono pointer-events-none absolute bottom-5 left-6 flex flex-wrap items-center gap-2 text-ui-sm tracking-[0.12em] text-mars-100/65">
             <span>X {Math.round(telemetry.position.x)}</span>
             <span>Z {Math.round(telemetry.position.z)}</span>
             <span>EL {Math.round(telemetry.elevation)} m</span>
             <span>HDG {Math.round(telemetry.heading)}°</span>
           </div>
-          <div className="mono pointer-events-none absolute right-5 top-5 text-right text-[9px] leading-relaxed tracking-[0.1em] text-mars-200/45">
+          <div className="mono pointer-events-none absolute right-5 top-5 text-right text-ui-sm leading-relaxed tracking-[0.1em] text-mars-200/65">
             <div>ZONE A · OLYMPUS MONS</div>
             <div>{zoom === 'zone' ? 'FULL SURVEY' : 'LOCAL WINDOW'}</div>
             <div className="text-signal/80">CLICK TO SELECT TARGET</div>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t px-4 py-2 text-[9px]" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t px-4 py-2 text-ui-sm" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
           {MAP_LAYERS.filter((l) => mapLayers[l.id]).map((l) => (
             <span key={l.id} className="mono flex items-center gap-1.5 tracking-[0.1em]" style={{ color: l.color }}>
               <span className="inline-block h-1.5 w-1.5" style={{ background: l.color }} />
@@ -703,13 +707,13 @@ export function WristMapContent() {
             </span>
           ))}
           {MAP_LAYERS.every((l) => !mapLayers[l.id]) && (
-            <span className="mono text-mars-200/40">NO ANALYSIS LAYERS ACTIVE — BASE PLATE ONLY</span>
+            <span className="mono text-mars-200/65">NO ANALYSIS LAYERS ACTIVE — BASE PLATE ONLY</span>
           )}
         </div>
       </div>
 
       <div className="scroll-area min-h-0 overflow-y-auto p-4">
-        <SectionTitle right={<span className="mono text-[9px] text-mars-200/40">{distanceToCamp.toFixed(0)} m TO CAMP</span>}>
+        <SectionTitle right={<span className="mono text-ui-sm text-mars-200/65">{distanceToCamp.toFixed(0)} m TO CAMP</span>}>
           LAYERS
         </SectionTitle>
         <div className="grid grid-cols-2 gap-1.5">
@@ -731,10 +735,10 @@ export function WristMapContent() {
                   style={{ background: active ? layer.color : 'transparent', border: `1px solid ${layer.color}99` }}
                 />
                 <span className="min-w-0">
-                  <span className="mono block text-[9px] tracking-[0.1em]" style={{ color: active ? layer.color : 'rgba(226,178,141,0.6)' }}>
+                  <span className="mono block text-ui-sm tracking-[0.1em]" style={{ color: active ? layer.color : 'rgba(232,186,150,0.88)' }}>
                     {layer.label}
                   </span>
-                  <span className="block text-[9px] leading-tight text-mars-200/35">{layer.description}</span>
+                  <span className="block text-ui-sm leading-tight text-mars-200/65">{layer.description}</span>
                 </span>
               </button>
             );
@@ -742,7 +746,7 @@ export function WristMapContent() {
         </div>
 
         <div className="mt-4">
-          <SectionTitle right={<span className="mono text-[9px] text-mars-200/40">{filteredPois.length} CONTACTS</span>}>
+          <SectionTitle right={<span className="mono text-ui-sm text-mars-200/65">{filteredPois.length} CONTACTS</span>}>
             TARGETS
           </SectionTitle>
           <div className="mb-2 flex flex-wrap gap-1">
@@ -754,7 +758,7 @@ export function WristMapContent() {
             ] as Array<[PoiFilter, string]>).map(([id, label]) => (
               <button
                 key={id}
-                className={`btn !px-2 !py-1 !text-[8px] ${filter === id ? 'btn-primary' : 'btn-ghost'}`}
+                className={`btn !px-2 !py-1 !text-ui-xs ${filter === id ? 'btn-primary' : 'btn-ghost'}`}
                 onClick={() => setFilter(id)}
               >
                 {label}
@@ -780,10 +784,10 @@ export function WristMapContent() {
                 >
                   <span className="h-1.5 w-1.5 shrink-0" style={{ background: TYPE_COLOR[poi.type] }} />
                   <span className="min-w-0 flex-1">
-                    <span className="mono block truncate text-[10px] text-mars-100">{poi.code} · {poi.shortName}</span>
-                    <span className="mono block text-[8px] tracking-[0.08em] text-mars-200/40">{state} · {d.toFixed(0)} m</span>
+                    <span className="mono block truncate text-ui-md text-mars-100">{poi.code} · {poi.shortName}</span>
+                    <span className="mono block text-ui-xs tracking-[0.08em] text-mars-200/65">{state} · {d.toFixed(0)} m</span>
                   </span>
-                  <ArrowUpRight size={11} className="shrink-0 text-mars-300/50" />
+                  <ArrowUpRight size={16} className="shrink-0 text-mars-300/80" />
                 </button>
               );
             })}
@@ -793,11 +797,11 @@ export function WristMapContent() {
         {selectedPoi && (
           <div className="mt-4 border p-3" style={{ borderColor: 'rgba(217,145,99,0.2)' }}>
             <div className="flex items-center justify-between">
-              <span className="mono text-[9px] tracking-[0.18em]" style={{ color: TYPE_COLOR[selectedPoi.type] }}>{selectedPoi.code}</span>
+              <span className="mono text-ui-sm tracking-[0.18em]" style={{ color: TYPE_COLOR[selectedPoi.type] }}>{selectedPoi.code}</span>
               <DataChip kind="simulation" compact />
             </div>
             <div className="display mt-1 text-sm text-mars-100">{selectedPoi.name}</div>
-            <p className="mt-1 text-[10px] leading-relaxed text-mars-200/50">{selectedPoi.description}</p>
+            <p className="mt-1 text-ui-md leading-relaxed text-mars-200/65">{selectedPoi.description}</p>
             <div className="mt-2 flex flex-wrap gap-1">
               <span className="chip">{selectedPoi.type}</span>
               <span className="chip">{selectedPoi.interaction}</span>
@@ -811,7 +815,7 @@ export function WristMapContent() {
                   planToPending();
                 }}
               >
-                <Navigation size={11} /> ROUTE HERE
+                <Navigation size={16} /> ROUTE HERE
               </button>
               {selectedPoi.zoneId && (
                 <button
@@ -822,7 +826,7 @@ export function WristMapContent() {
                   }}
                   title="Open the protection record for this region"
                 >
-                  <ShieldAlert size={11} />
+                  <ShieldAlert size={16} />
                 </button>
               )}
             </div>
@@ -830,33 +834,33 @@ export function WristMapContent() {
         )}
 
         <div className="mt-4 border-t pt-3" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
-          <SectionTitle right={<RouteIcon size={12} className="text-mars-300/60" />}>ROUTE PLAN</SectionTitle>
+          <SectionTitle right={<RouteIcon size={17} className="text-mars-300/80" />}>ROUTE PLAN</SectionTitle>
           {pending ? (
             <div>
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <div className="mono text-[10px] text-mars-100">{pending.label}</div>
-                  <div className="mono text-[9px] text-mars-200/45">
+                  <div className="mono text-ui-md text-mars-100">{pending.label}</div>
+                  <div className="mono text-ui-sm text-mars-200/65">
                     {Math.round(pending.x)}, {Math.round(pending.z)} · {distanceToPending?.toFixed(0)} m
                   </div>
                 </div>
                 {pendingZone && (
-                  <span className="chip chip-warn !text-[8px]" style={{ color: LEVEL_COLOR[pendingZone.level] }}>
+                  <span className="chip chip-warn !text-ui-xs" style={{ color: LEVEL_COLOR[pendingZone.level] }}>
                     {pendingZone.access.toUpperCase()}
                   </span>
                 )}
               </div>
               {pendingZone && (
-                <div className="mt-2 border-l-2 pl-2 text-[9px] leading-relaxed text-mars-200/55" style={{ borderColor: LEVEL_COLOR[pendingZone.level] }}>
+                <div className="mt-2 border-l-2 pl-2 text-ui-sm leading-relaxed text-mars-200/65" style={{ borderColor: LEVEL_COLOR[pendingZone.level] }}>
                   {pendingZone.name}. {pendingZone.measures[0]}
                 </div>
               )}
               <button className="btn btn-primary mt-2 w-full !py-2" onClick={planToPending} disabled={planning}>
-                {planning ? 'COMPUTING ROUTES…' : 'COMPUTE 3 ROUTES'} <RouteIcon size={12} />
+                {planning ? 'COMPUTING ROUTES…' : 'COMPUTE 3 ROUTES'} <RouteIcon size={17} />
               </button>
             </div>
           ) : (
-            <div className="border border-dashed px-3 py-4 text-[10px] leading-relaxed text-mars-200/40" style={{ borderColor: 'rgba(217,145,99,0.2)' }}>
+            <div className="border border-dashed px-3 py-4 text-ui-md leading-relaxed text-mars-200/65" style={{ borderColor: 'rgba(217,145,99,0.2)' }}>
               Click the map or choose a target, then compute the safest, balanced and scientific alternatives.
             </div>
           )}
@@ -872,26 +876,26 @@ export function WristMapContent() {
                 />
               ))}
               {navigation.selectedRouteId && (
-                <button className="btn btn-ghost w-full !py-1.5 !text-[9px]" onClick={clearRoute}>
+                <button className="btn btn-ghost w-full !py-1.5 !text-ui-sm" onClick={clearRoute}>
                   CLEAR ACTIVE ROUTE
                 </button>
               )}
             </div>
           )}
           {shownRoute?.warning && (
-            <div className="mt-2 flex gap-1.5 border-l-2 pl-2 text-[9px] leading-relaxed text-warn/80" style={{ borderColor: '#ffb35c' }}>
-              <ShieldAlert size={11} className="mt-0.5 shrink-0" /> {shownRoute.warning}
+            <div className="mt-2 flex gap-1.5 border-l-2 pl-2 text-ui-sm leading-relaxed text-warn/80" style={{ borderColor: '#ffb35c' }}>
+              <ShieldAlert size={16} className="mt-0.5 shrink-0" /> {shownRoute.warning}
             </div>
           )}
         </div>
 
         <div className="mt-4 border-t pt-3" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>
           <SectionTitle>FIELD NOTES</SectionTitle>
-          <div className="space-y-1.5 text-[9px] leading-relaxed text-mars-200/45">
-            <div className="flex gap-2"><Layers size={11} className="mt-0.5 shrink-0 text-mars-300/50" /> Layers are derived from the procedural height field. Mineral signatures appear only after a scanner confirmation.</div>
-            <div className="flex gap-2"><MapPin size={11} className="mt-0.5 shrink-0 text-mars-300/50" /> Precaution rings are simulation boundaries, not official COSPAR special regions.</div>
-            <div className="flex gap-2"><Crosshair size={11} className="mt-0.5 shrink-0 text-mars-300/50" /> Route plans guide the walk; the astronaut remains responsible for local conditions.</div>
-            <div className="flex gap-2"><ScanLine size={11} className="mt-0.5 shrink-0 text-mars-300/50" /> {Object.keys(scanned).length} targets scanned · {Object.keys(analyzed).length} analyzed in this traverse.</div>
+          <div className="space-y-1.5 text-ui-sm leading-relaxed text-mars-200/65">
+            <div className="flex gap-2"><Layers size={16} className="mt-0.5 shrink-0 text-mars-300/80" /> Layers are derived from the procedural height field. Mineral signatures appear only after a scanner confirmation.</div>
+            <div className="flex gap-2"><MapPin size={16} className="mt-0.5 shrink-0 text-mars-300/80" /> Precaution rings are simulation boundaries, not official COSPAR special regions.</div>
+            <div className="flex gap-2"><Crosshair size={16} className="mt-0.5 shrink-0 text-mars-300/80" /> Route plans guide the walk; the astronaut remains responsible for local conditions.</div>
+            <div className="flex gap-2"><ScanLine size={16} className="mt-0.5 shrink-0 text-mars-300/80" /> {Object.keys(scanned).length} targets scanned · {Object.keys(analyzed).length} analyzed in this traverse.</div>
           </div>
         </div>
       </div>
@@ -911,21 +915,21 @@ function RouteCard({ route, active, onSelect }: { route: RouteOption; active: bo
       }}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="mono flex items-center gap-1.5 text-[9px] tracking-[0.12em]" style={{ color: route.color }}>
+        <span className="mono flex items-center gap-1.5 text-ui-sm tracking-[0.12em]" style={{ color: route.color }}>
           <span className="inline-block h-1.5 w-4" style={{ background: route.color }} />
           {route.name}
         </span>
-        <span className="mono text-[8px]" style={{ color: active ? route.color : 'rgba(226,178,141,0.45)' }}>
+        <span className="mono text-ui-xs" style={{ color: active ? route.color : 'rgba(232,186,150,0.82)' }}>
           {active ? 'ACTIVE' : 'ACTIVATE'}
         </span>
       </div>
-      <div className="mono mt-1 grid grid-cols-4 gap-1 text-[9px] text-mars-200/55">
+      <div className="mono mt-1 grid grid-cols-4 gap-1 text-ui-sm text-mars-200/65">
         <span>{route.stats.distance} m</span>
         <span>{route.stats.estimatedMinutes} min</span>
         <span>{route.stats.maxSlope}° max</span>
         <span style={{ color: riskColor }}>RISK {route.stats.risk}</span>
       </div>
-      <div className="mono mt-1 flex items-center justify-between text-[8px] text-mars-200/35">
+      <div className="mono mt-1 flex items-center justify-between text-ui-xs text-mars-200/65">
         <span>ASCENT {route.stats.ascent} m · STOPS {route.stats.poiCount}</span>
         <span>HAZARD CELLS {route.stats.hazardCells}</span>
       </div>

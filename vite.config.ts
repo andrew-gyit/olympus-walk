@@ -6,7 +6,8 @@ export default defineConfig({
   // Relative base keeps the build portable on Netlify, itch.io, GitHub Pages
   // project sites and any subdirectory hosting.
   base: './',
-  server: { host: '::', port: 5173, strictPort: true },
+  // The dev server only listens on this machine; Vite dev-server advisories assume it is reachable over the network.
+  server: { host: 'localhost', port: 5173, strictPort: true },
   preview: { host: '::', port: 4173, strictPort: true },
   build: {
     target: 'es2020',

@@ -37,7 +37,7 @@ function ActionButton({
       }}
     >
       {icon}
-      <span className="mono text-[6px] tracking-[0.08em]">{label}</span>
+      <span className="mono text-ui-2xs tracking-[0.08em]">{label}</span>
     </button>
   );
 }
@@ -127,7 +127,7 @@ export function TouchControls() {
           if (lookPointer.current === e.pointerId) lookPointer.current = null;
         }}
       >
-        <div className="mono absolute right-4 top-4 text-[7px] tracking-[0.16em] text-mars-100/22">DRAG TO LOOK</div>
+        <div className="mono absolute right-4 top-4 text-ui-2xs tracking-[0.16em] text-mars-100/65">DRAG TO LOOK</div>
       </div>
 
       {/* Thumbstick */}
@@ -164,7 +164,7 @@ export function TouchControls() {
             boxShadow: '0 0 16px rgba(143,240,210,0.16)',
           }}
         />
-        <div className="mono pointer-events-none absolute -bottom-4 left-1/2 -translate-x-1/2 text-[6.5px] tracking-[0.14em] text-mars-200/28">
+        <div className="mono pointer-events-none absolute -bottom-4 left-1/2 -translate-x-1/2 text-ui-2xs tracking-[0.14em] text-mars-200/65">
           MOVE
         </div>
       </div>

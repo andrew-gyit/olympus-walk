@@ -65,12 +65,12 @@ export function BootScreen() {
             <div className="label" style={{ color: '#d99163' }}>MARS SURFACE OPERATIONS / TERMINAL 04</div>
             <h1 className="display title-glow mt-2 text-4xl font-bold tracking-[0.16em] text-mars-100 md:text-6xl">OLYMPUS<br />WALK</h1>
           </div>
-          <div className="mono text-right text-[9px] leading-relaxed tracking-[0.2em] text-mars-300/60">
+          <div className="mono text-right text-ui-sm leading-relaxed tracking-[0.2em] text-mars-300/80">
             ZONE A<br />OLYMPUS MONS<br />SIMULATION
           </div>
         </div>
         <div className="logo-line my-6" />
-        <div className="flex items-center justify-between text-[10px]">
+        <div className="flex items-center justify-between text-ui-md">
           <span className="mono tracking-[0.2em] text-mars-200/80">{bootMessage}</span>
           <span className="mono text-mars-300">{Math.round(bootProgress * 100)}%</span>
         </div>
@@ -82,7 +82,7 @@ export function BootScreen() {
         </div>
         <div className="mt-5 grid grid-cols-1 gap-1.5">
           {steps.map((step, i) => (
-            <div key={step} className="mono flex items-center gap-2 text-[9px] tracking-[0.16em] text-mars-200/40">
+            <div key={step} className="mono flex items-center gap-2 text-ui-sm tracking-[0.16em] text-mars-200/65">
               <span
                 className="inline-block h-1 w-1 rounded-full"
                 style={{
@@ -94,13 +94,13 @@ export function BootScreen() {
             </div>
           ))}
         </div>
-        <div className="mt-8 flex items-center justify-between gap-3 text-[9px] text-mars-200/35">
+        <div className="mt-8 flex items-center justify-between gap-3 text-ui-sm text-mars-200/65">
           <span className="mono">PROCEDURAL TERRAIN · NOT A SCIENTIFIC REPRODUCTION</span>
           <span className="mono">BUILD 1.0 / 2026</span>
         </div>
         {phase === 'boot' && bootProgress >= 1 && (
           <button className="btn btn-primary mt-6 w-full" onClick={bootComplete}>
-            ENTER TERMINAL <ArrowRight size={14} />
+            ENTER TERMINAL <ArrowRight size={18} />
           </button>
         )}
       </div>
@@ -142,14 +142,14 @@ export function MainMenu() {
             </div>
           </div>
           <div className="hidden text-right md:block">
-            <div className="mono text-[9px] tracking-[0.24em] text-mars-200/40">FIELD TERMINAL</div>
-            <div className="mono mt-1 text-[10px] text-signal">LINK STABLE</div>
-            <div className="mono mt-1 text-[9px] text-mars-200/40">12 TARGETS · 5 MISSIONS</div>
+            <div className="mono text-ui-sm tracking-[0.24em] text-mars-200/65">FIELD TERMINAL</div>
+            <div className="mono mt-1 text-ui-md text-signal">LINK STABLE</div>
+            <div className="mono mt-1 text-ui-sm text-mars-200/65">12 TARGETS · 5 MISSIONS</div>
           </div>
         </div>
 
         <div className="max-w-xl">
-          <div className="mb-6 max-w-lg text-sm leading-relaxed text-mars-100/70">
+          <div className="mb-6 max-w-lg text-base leading-relaxed text-mars-100/85">
             A playable third-person Mars exploration simulator. Walk a procedural Olympus Mons training
             zone, read the terrain, run scientific instruments, manage life support and follow
             planetary-protection protocol.
@@ -165,45 +165,45 @@ export function MainMenu() {
                 <span className="flex items-center gap-3">
                   <Play size={16} /> CONTINUE WALK
                 </span>
-                <span className="mono text-[9px] tracking-[0.16em] opacity-70">RESTORE LAST SUIT STATE</span>
+                <span className="mono text-ui-sm tracking-[0.16em] opacity-70">RESTORE LAST SUIT STATE</span>
               </button>
             )}
             <button className="btn justify-between !py-3.5 text-left" onClick={() => setPhase('mission-select')}>
               <span className="flex items-center gap-3">
                 <Compass size={16} /> {hasSave ? 'NEW EXPEDITION' : 'BEGIN EXPEDITION'}
               </span>
-              <span className="mono text-[9px] tracking-[0.16em] opacity-50">MISSION SELECT</span>
+              <span className="mono text-ui-sm tracking-[0.16em] opacity-50">MISSION SELECT</span>
             </button>
             <div className="grid grid-cols-2 gap-2.5">
               <button className="btn justify-start" onClick={() => setOverlay('manual')}>
-                <BookOpen size={14} /> FIELD MANUAL
+                <BookOpen size={18} /> FIELD MANUAL
               </button>
               <button className="btn justify-start" onClick={() => setOverlay('settings')}>
-                <Settings size={14} /> SETTINGS
+                <Settings size={18} /> SETTINGS
               </button>
             </div>
           </div>
 
-          <div className="mt-7 grid max-w-lg grid-cols-3 gap-2">
+          <div className="mt-7 grid max-w-xl grid-cols-3 gap-2">
             <div className="glass px-3 py-2.5">
-              <div className="label">MISSIONS OPEN</div>
-              <div className="mono mt-1 text-xl text-mars-100">{unlocked.length}<span className="text-xs text-mars-300/50"> / 5</span></div>
+              <div className="label whitespace-nowrap">MISSIONS OPEN</div>
+              <div className="mono mt-1 text-xl text-mars-100">{unlocked.length}<span className="text-xs text-mars-300/80"> / 5</span></div>
             </div>
             <div className="glass px-3 py-2.5">
-              <div className="label">WALKS LOGGED</div>
+              <div className="label whitespace-nowrap">WALKS LOGGED</div>
               <div className="mono mt-1 text-xl text-mars-100">{reports.length}</div>
             </div>
             <div className="glass px-3 py-2.5">
-              <div className="label">BEST SCORE</div>
-              <div className="mono mt-1 text-xl" style={{ color: best !== null ? '#8ff0d2' : '#6e4a39' }}>{best !== null ? best : '—'}</div>
+              <div className="label whitespace-nowrap">BEST SCORE</div>
+              <div className="mono mt-1 text-xl" style={{ color: best !== null ? '#8ff0d2' : '#9a7560' }}>{best !== null ? best : '—'}</div>
             </div>
           </div>
         </div>
 
-        <div className="max-w-2xl">
-          <div className="flex flex-wrap items-center gap-2 text-[9px]">
+        <div className="max-w-3xl">
+          <div className="flex flex-wrap items-center gap-2 text-ui-sm">
             <DataChip kind="simulation" />
-            <span className="mono text-mars-200/35">Procedural terrain · fictional training zone · not a real Marswalk plan</span>
+            <span className="mono text-mars-200/65">Procedural terrain · fictional training zone · not a real Marswalk plan</span>
           </div>
           <div className="mt-3 flex items-center gap-3">
             <button
@@ -211,9 +211,9 @@ export function MainMenu() {
               onClick={() => updateSettings({ muted: !muted })}
               title="Toggle ambient audio"
             >
-              <span className="mono text-[9px]">{muted ? 'AUDIO OFF' : 'AUDIO ON'}</span>
+              <span className="mono text-ui-sm">{muted ? 'AUDIO OFF' : 'AUDIO ON'}</span>
             </button>
-            <span className="mono text-[9px] tracking-[0.14em] text-mars-200/25">CLICK THE WORLD TO CAPTURE POINTER · ESC TO PAUSE</span>
+            <span className="mono text-ui-sm tracking-[0.14em] text-mars-200/65">CLICK THE WORLD TO CAPTURE POINTER · ESC TO PAUSE</span>
           </div>
         </div>
       </div>
@@ -242,7 +242,7 @@ function ManualOverlay({ onClose }: { onClose: () => void }) {
                 </div>
                 <div className="min-w-0">
                   <div className="text-xs text-mars-100">{row.action}</div>
-                  <div className="text-[10px] leading-relaxed text-mars-200/45">{row.note}</div>
+                  <div className="text-ui-md leading-relaxed text-mars-200/65">{row.note}</div>
                 </div>
               </div>
             ))}
@@ -251,7 +251,7 @@ function ManualOverlay({ onClose }: { onClose: () => void }) {
         <div className="space-y-5">
           <div>
             <SectionTitle>FIELD METHOD</SectionTitle>
-            <ol className="space-y-2 text-[11px] leading-relaxed text-mars-100/70">
+            <ol className="space-y-2 text-ui-lg leading-relaxed text-mars-100/70">
               <li><span className="mono text-signal">01</span> Scan before you approach. The scanner reveals contacts inside 85 m.</li>
               <li><span className="mono text-signal">02</span> Analyze at close range. Analysis creates a field observation.</li>
               <li><span className="mono text-signal">03</span> Sample only after analysis. Scan → analyze → sample preserves the record chain.</li>
@@ -265,7 +265,7 @@ function ManualOverlay({ onClose }: { onClose: () => void }) {
               {(Object.keys(DATA_LABELS) as Array<keyof typeof DATA_LABELS>).map((k) => (
                 <div key={k} className="glass px-3 py-2">
                   <DataChip kind={k} compact />
-                  <p className="mt-1.5 text-[10px] leading-relaxed text-mars-200/50">
+                  <p className="mt-1.5 text-ui-md leading-relaxed text-mars-200/65">
                     {k === 'real'
                       ? 'Published instrument datasets and public archives. No NASA raster tiles are bundled in this offline build.'
                       : k === 'derived'
@@ -277,7 +277,7 @@ function ManualOverlay({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         </div>
-        <div className="md:col-span-2 border-t pt-4 text-[10px] leading-relaxed text-mars-200/40" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
+        <div className="md:col-span-2 border-t pt-4 text-ui-md leading-relaxed text-mars-200/65" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
           {DISCLAIMER}
         </div>
       </div>
@@ -299,13 +299,13 @@ export function MissionSelect({ onSelect }: { onSelect: (id: string) => void }) 
           <div>
             <div className="label">EXPEDITION CONTROL / ZONE A</div>
             <h1 className="display mt-1 text-3xl font-semibold tracking-[0.1em] text-mars-100 md:text-4xl">SELECT A MISSION</h1>
-            <p className="mt-2 max-w-2xl text-xs leading-relaxed text-mars-200/55">
+            <p className="mt-2 max-w-2xl text-xs leading-relaxed text-mars-200/65">
               Five sequential traverses around Base Camp A. Complete the objectives and return inside the
               camp perimeter to close each walk. Missions unlock in order.
             </p>
           </div>
           <button className="btn btn-ghost" onClick={() => setPhase('menu')}>
-            <ArrowLeft size={14} /> MAIN MENU
+            <ArrowLeft size={18} /> MAIN MENU
           </button>
         </div>
 
@@ -330,14 +330,14 @@ export function MissionSelect({ onSelect }: { onSelect: (id: string) => void }) 
                 <div className="absolute inset-x-0 top-0 h-[2px]" style={{ background: locked ? 'rgba(217,145,99,0.25)' : mission.accent }} />
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="mono text-[9px] tracking-[0.22em]" style={{ color: locked ? '#7b5a49' : mission.accent }}>
+                    <span className="mono text-ui-sm tracking-[0.22em]" style={{ color: locked ? '#7b5a49' : mission.accent }}>
                       {mission.code} / MISSION {String(mission.index).padStart(2, '0')}
                     </span>
-                    {locked ? <Lock size={13} className="text-mars-300/50" /> : report ? <CheckCircle2 size={14} style={{ color: mission.accent }} /> : <ChevronRight size={14} className="text-mars-300/60" />}
+                    {locked ? <Lock size={17} className="text-mars-300/80" /> : report ? <CheckCircle2 size={18} style={{ color: mission.accent }} /> : <ChevronRight size={18} className="text-mars-300/80" />}
                   </div>
                   <h2 className="display mt-2 text-lg font-semibold tracking-wide text-mars-100">{mission.name}</h2>
-                  <div className="text-[10px] text-mars-200/50">{mission.subtitle}</div>
-                  <p className="mt-2 line-clamp-3 text-[11px] leading-relaxed text-mars-100/60">{mission.description}</p>
+                  <div className="text-ui-md text-mars-200/65">{mission.subtitle}</div>
+                  <p className="mt-2 line-clamp-3 text-ui-lg leading-relaxed text-mars-100/65">{mission.description}</p>
                 </div>
                 <div>
                   <div className="mt-3 flex flex-wrap gap-1.5">
@@ -346,10 +346,10 @@ export function MissionSelect({ onSelect }: { onSelect: (id: string) => void }) 
                     <span className="chip">{mission.distance}</span>
                   </div>
                   <div className="mt-3 flex items-center justify-between border-t pt-2" style={{ borderColor: 'rgba(217,145,99,0.14)' }}>
-                    <span className="mono text-[9px] text-mars-200/40">
+                    <span className="mono text-ui-sm text-mars-200/65">
                       {locked ? `REQUIRES ${MISSION_BY_ID[mission.unlockAfter ?? '']?.name ?? 'EARLIER WALK'}` : `${mission.objectives.filter((o) => o.required).length} REQUIRED OBJECTIVES`}
                     </span>
-                    <span className="mono text-[9px]" style={{ color: mission.accent }}>
+                    <span className="mono text-ui-sm" style={{ color: mission.accent }}>
                       {report ? `LAST ${report.totalScore}/100 · ${report.grade}` : bestScores[mission.id] ? `BEST ${bestScores[mission.id]}` : isUnlocked ? 'READY' : 'LOCKED'}
                     </span>
                   </div>
@@ -360,10 +360,10 @@ export function MissionSelect({ onSelect }: { onSelect: (id: string) => void }) 
           <div className="relative flex min-h-[230px] flex-col justify-between border border-dashed p-4" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
             <div>
               <div className="flex items-center gap-2">
-                <TriangleAlert size={13} className="text-warn" />
-                <span className="mono text-[9px] tracking-[0.2em] text-warn">SCIENTIFIC NOTICE</span>
+                <TriangleAlert size={17} className="text-warn" />
+                <span className="mono text-ui-sm tracking-[0.2em] text-warn">SCIENTIFIC NOTICE</span>
               </div>
-              <p className="mt-3 text-[11px] leading-relaxed text-mars-100/55">{DISCLAIMER}</p>
+              <p className="mt-3 text-ui-lg leading-relaxed text-mars-100/65">{DISCLAIMER}</p>
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               <DataChip kind="real" compact />
@@ -387,13 +387,13 @@ export function Briefing({ missionId, onStart, onBack }: { missionId: string; on
       <div className="relative flex w-full max-w-4xl flex-col overflow-y-auto scroll-area px-6 py-6 md:px-10 md:py-8">
         <div className="flex items-center justify-between">
           <div className="label">MISSION BRIEFING / {mission.code}</div>
-          <button className="btn btn-ghost" onClick={onBack}><ArrowLeft size={13} /> MISSIONS</button>
+          <button className="btn btn-ghost" onClick={onBack}><ArrowLeft size={17} /> MISSIONS</button>
         </div>
         <div className="mt-4 flex items-center gap-3">
           <div className="mono text-5xl font-bold" style={{ color: mission.accent }}>{String(mission.index).padStart(2, '0')}</div>
           <div>
             <h1 className="display text-3xl font-bold tracking-[0.08em] text-mars-100 md:text-4xl">{mission.name}</h1>
-            <p className="text-xs text-mars-200/55">{mission.subtitle}</p>
+            <p className="text-xs text-mars-200/65">{mission.subtitle}</p>
           </div>
         </div>
         <div className="mt-4 flex flex-wrap gap-1.5">
@@ -407,32 +407,32 @@ export function Briefing({ missionId, onStart, onBack }: { missionId: string; on
         <div className="mt-5 grid gap-5 md:grid-cols-[1.1fr_0.9fr]">
           <div>
             <SectionTitle>BRIEF</SectionTitle>
-            <p className="text-[12px] leading-relaxed text-mars-100/72">{mission.brief}</p>
+            <p className="text-ui-xl leading-relaxed text-mars-100/72">{mission.brief}</p>
             <div className="mt-4 glass p-3">
               <div className="label mb-1">SCIENCE FOCUS</div>
-              <div className="text-[11px] text-mars-100/70">{mission.scienceFocus}</div>
+              <div className="text-ui-lg text-mars-100/70">{mission.scienceFocus}</div>
               <div className="mt-3 label mb-1">FIELD EQUIPMENT</div>
               <div className="flex flex-wrap gap-1.5">
                 {mission.equipment.map((e) => <span key={e} className="chip">{e}</span>)}
               </div>
             </div>
-            <div className="mt-4 border-l-2 pl-3 text-[10px] leading-relaxed text-mars-200/45" style={{ borderColor: mission.accent }}>
+            <div className="mt-4 border-l-2 pl-3 text-ui-md leading-relaxed text-mars-200/65" style={{ borderColor: mission.accent }}>
               Return inside Base Camp A (14 m radius) to close the traverse. Mission completion is confirmed
               automatically when every required objective is complete. Field values are simulation data.
             </div>
           </div>
           <div>
-            <SectionTitle right={<span className="mono text-[9px] text-mars-200/40">{mission.objectives.length} TASKS</span>}>OBJECTIVES</SectionTitle>
+            <SectionTitle right={<span className="mono text-ui-sm text-mars-200/65">{mission.objectives.length} TASKS</span>}>OBJECTIVES</SectionTitle>
             <div className="space-y-1.5">
               {mission.objectives.map((obj, i) => (
                 <div key={obj.id} className="flex items-start gap-2.5 border-b py-2 last:border-0" style={{ borderColor: 'rgba(217,145,99,0.12)' }}>
-                  <div className="mono mt-0.5 w-5 text-[10px]" style={{ color: obj.required ? mission.accent : '#8e6b57' }}>{String(i + 1).padStart(2, '0')}</div>
+                  <div className="mono mt-0.5 w-5 text-ui-md" style={{ color: obj.required ? mission.accent : '#b08a72' }}>{String(i + 1).padStart(2, '0')}</div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-mars-100">{obj.label}</span>
-                      {!obj.required && <span className="chip !py-0 !text-[8px]">OPTIONAL</span>}
+                      <span className="text-ui-lg text-mars-100">{obj.label}</span>
+                      {!obj.required && <span className="chip !py-0 !text-ui-xs">OPTIONAL</span>}
                     </div>
-                    <div className="text-[10px] leading-relaxed text-mars-200/45">{obj.detail}</div>
+                    <div className="text-ui-md leading-relaxed text-mars-200/65">{obj.detail}</div>
                   </div>
                 </div>
               ))}
@@ -440,7 +440,7 @@ export function Briefing({ missionId, onStart, onBack }: { missionId: string; on
             {last && (
               <div className="mt-3 glass px-3 py-2">
                 <div className="label">LAST ATTEMPT</div>
-                <div className="mono mt-1 text-[11px] text-mars-100">
+                <div className="mono mt-1 text-ui-lg text-mars-100">
                   {last.totalScore}/100 · GRADE {last.grade} · {last.outcome.toUpperCase()} · {formatDuration(last.elapsed)}
                 </div>
               </div>
@@ -449,11 +449,11 @@ export function Briefing({ missionId, onStart, onBack }: { missionId: string; on
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
-          <div className="mono max-w-md text-[9px] leading-relaxed tracking-[0.1em] text-mars-200/35">
+          <div className="mono max-w-md text-ui-sm leading-relaxed tracking-[0.1em] text-mars-200/65">
             BY STARTING YOU ACCEPT THE FIELD PROTOCOL: OBSERVE MORE, DISTURB LESS. THE ZONE IS PROCEDURAL AND FICTIONAL.
           </div>
           <button className="btn btn-primary !px-6 !py-3" onClick={onStart}>
-            <Play size={15} /> BEGIN TRAVERSE
+            <Play size={19} /> BEGIN TRAVERSE
           </button>
         </div>
       </div>

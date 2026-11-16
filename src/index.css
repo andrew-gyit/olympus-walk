@@ -14,6 +14,8 @@
   --panel-solid: #170e0b;
   --line: rgba(217, 145, 99, 0.26);
   --line-bright: rgba(217, 145, 99, 0.55);
+  /* UI unit: 1px at 1366 wide, 1.2px at 1920+. HUD/menu type and widths are written as N * var(--u). */
+  --u: clamp(1px, calc(0.5px + 0.0366vw), 1.25px);
 }
 
 * {
@@ -44,6 +46,27 @@ body {
 canvas {
   display: block;
   touch-action: none;
+}
+
+/* Visible keyboard focus for every control (WCAG 2.4.7). */
+button:focus-visible,
+input:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-sweep,
+  .scanlines {
+    display: none;
+  }
+  .fade-in,
+  .slide-up,
+  .scale-in,
+  .toast {
+    animation-duration: 1ms;
+  }
 }
 
 ::selection {
@@ -156,10 +179,10 @@ canvas {
 }
 
 .label {
-  font-size: 9px;
-  letter-spacing: 0.22em;
+  font-size: calc(11 * var(--u));
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(226, 178, 141, 0.72);
+  color: rgba(232, 186, 150, 0.85);
   font-family: 'Consolas', monospace;
 }
 
@@ -170,11 +193,12 @@ canvas {
   justify-content: center;
   gap: 0.55rem;
   padding: 0.62rem 1.05rem;
+  min-height: calc(36 * var(--u));
   border: 1px solid rgba(217, 145, 99, 0.34);
   background: rgba(34, 20, 15, 0.65);
   color: #f1d9c3;
-  font-size: 11px;
-  letter-spacing: 0.16em;
+  font-size: calc(13 * var(--u));
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-family: 'Consolas', monospace;
   cursor: pointer;
@@ -231,13 +255,13 @@ canvas {
   display: inline-flex;
   align-items: center;
   gap: 0.32rem;
-  padding: 0.2rem 0.45rem;
+  padding: 0.2rem 0.5rem;
   border: 1px solid rgba(217, 145, 99, 0.26);
-  font-size: 9px;
-  letter-spacing: 0.12em;
+  font-size: calc(11 * var(--u));
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   font-family: 'Consolas', monospace;
-  color: rgba(245, 211, 183, 0.82);
+  color: rgba(245, 211, 183, 0.92);
   white-space: nowrap;
 }
 
@@ -260,6 +284,7 @@ canvas {
 }
 
 .stat-bar {
+  min-height: 4px;
   height: 5px;
   width: 100%;
   background: rgba(255, 228, 205, 0.1);
@@ -278,15 +303,15 @@ canvas {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
+  min-width: calc(22 * var(--u));
+  height: calc(22 * var(--u));
+  padding: 0 5px;
   border: 1px solid rgba(244, 223, 204, 0.32);
   border-bottom-width: 2px;
   border-radius: 2px;
   background: rgba(255, 240, 225, 0.07);
   font-family: 'Consolas', monospace;
-  font-size: 9px;
+  font-size: calc(12 * var(--u));
   color: #f6dfc8;
 }
 

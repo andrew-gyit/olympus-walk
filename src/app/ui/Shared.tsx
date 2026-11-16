@@ -72,7 +72,7 @@ export function PanelShell({
         <div className="flex items-start justify-between gap-4 border-b px-4 py-3 md:px-5" style={{ borderColor: 'rgba(217,145,99,0.2)' }}>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              {code && <span className="mono text-[9px] tracking-[0.24em]" style={{ color: accent }}>{code}</span>}
+              {code && <span className="mono text-ui-sm tracking-[0.24em]" style={{ color: accent }}>{code}</span>}
               <span className="label">{subtitle}</span>
             </div>
             <h2 className="display mt-0.5 truncate text-xl font-semibold tracking-wide text-mars-100 md:text-2xl">{title}</h2>
@@ -80,7 +80,7 @@ export function PanelShell({
           <div className="flex shrink-0 items-center gap-2">
             {headerRight}
             <button className="btn btn-ghost !px-2.5 !py-2" onClick={onClose} aria-label="Close panel">
-              <X size={15} />
+              <X size={19} />
             </button>
           </div>
         </div>
@@ -104,7 +104,7 @@ export function EmptyState({ title, body }: { title: string; body: string }) {
     <div className="flex flex-col items-center justify-center gap-2 border border-dashed px-6 py-12 text-center" style={{ borderColor: 'rgba(217,145,99,0.22)' }}>
       <div className="label">NO RECORDS</div>
       <div className="display text-base text-mars-100">{title}</div>
-      <p className="max-w-sm text-xs leading-relaxed text-mars-200/55">{body}</p>
+      <p className="max-w-sm text-xs leading-relaxed text-mars-200/65">{body}</p>
     </div>
   );
 }
