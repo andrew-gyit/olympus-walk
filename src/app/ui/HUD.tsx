@@ -22,7 +22,7 @@ import {
   Wind,
   Zap,
 } from 'lucide-react';
-import { WORLD } from '../../game/config';
+import { WORLD, touchHint } from '../../game/config';
 import { POIS } from '../../game/data/pois';
 import { ZONES } from '../../game/data/zones';
 import { selectCurrentObjective, selectReturnReady, useGameStore } from '../../stores/gameStore';
@@ -80,6 +80,7 @@ function MissionCard() {
   const telemetry = useGameStore((s) => s.telemetry);
   const navigation = useGameStore((s) => s.navigation);
   const openPanel = useGameStore((s) => s.openPanel);
+  const touchMode = useGameStore((s) => s.touchMode);
 
   if (!mission) return null;
   const required = mission.objectives.filter((o) => o.required);
@@ -94,7 +95,7 @@ function MissionCard() {
     : current?.label ?? 'All required objectives complete';
   const detail = returnReady
     ? 'Enter the 14 m camp perimeter to close the traverse.'
-    : current?.hint ?? current?.detail ?? 'Check the objectives panel for the next step.';
+    : touchHint(current?.hint ?? current?.detail ?? 'Check the objectives panel for the next step.', touchMode);
 
   return (
     <Panel className="w-full">

@@ -100,6 +100,10 @@ export const DATA_LABELS = {
   simulation: { label: 'SIMULATION DATA', color: '#8db7ff' },
 } as const;
 
+// Mission hints are written for keyboard + mouse; on touch devices show the on-screen equivalent.
+export const touchHint = (text: string, touch: boolean) =>
+  touch ? text.replace('W A S D to move, mouse to look.', 'Left stick to move, drag the right side to look.') : text;
+
 export const CONTROL_HELP = [
   { keys: 'W A S D', action: 'Walk / strafe', note: 'Camera-relative movement with suit inertia.' },
   { keys: 'MOUSE', action: 'Look / orbit camera', note: 'Click the world to capture the pointer.' },

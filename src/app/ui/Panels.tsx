@@ -29,7 +29,7 @@ import {
   Volume2,
 } from 'lucide-react';
 import { RESOURCES, DATA_LABELS, MAP_LAYERS } from '../../game/config';
-import { CONTROL_HELP } from '../../game/config';
+import { CONTROL_HELP, touchHint } from '../../game/config';
 import { DISCLAIMER, LEGAL_SOURCES, PROTECTION_PRINCIPLES, DATA_SOURCES, REAL_VS_SIM } from '../../game/data/scientificContent';
 import { ZONES, ZONE_BY_ID, zoneAt } from '../../game/data/zones';
 import { POI_BY_ID } from '../../game/data/pois';
@@ -215,6 +215,7 @@ export function ObjectivesContent() {
   const events = useGameStore((s) => s.events);
   const current = useGameStore(selectCurrentObjective);
   const hint = useGameStore((s) => s.hint);
+  const touchMode = useGameStore((s) => s.touchMode);
   const navigation = useGameStore((s) => s.navigation);
   const telemetry = useGameStore((s) => s.telemetry);
   const openPanel = useGameStore((s) => s.openPanel);
@@ -277,7 +278,7 @@ export function ObjectivesContent() {
                     )}
                     {isCurrent && objective.hint && (
                       <div className="mt-1.5 border-l-2 pl-2 text-ui-sm leading-relaxed text-warn/80" style={{ borderColor: '#ffb35c' }}>
-                        {objective.hint}
+                        {touchHint(objective.hint, touchMode)}
                       </div>
                     )}
                   </div>
@@ -299,7 +300,7 @@ export function ObjectivesContent() {
         <div className="glass p-3">
           <div className="label">ACTIVE GUIDANCE</div>
           <div className="mt-1 text-ui-lg leading-relaxed text-mars-100/75">
-            {hint?.text ?? current?.hint ?? current?.detail ?? 'All required objectives are complete. Return to Base Camp A.'}
+            {hint?.text ?? touchHint(current?.hint ?? current?.detail ?? 'All required objectives are complete. Return to Base Camp A.', touchMode)}
           </div>
           {navigation.destination && (
             <div className="mt-2 flex items-center justify-between border-t pt-2" style={{ borderColor: 'rgba(217,145,99,0.16)' }}>

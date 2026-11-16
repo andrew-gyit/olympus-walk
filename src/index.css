@@ -539,3 +539,16 @@ input:focus-visible,
     display: none !important;
   }
 }
+
+/* Briefing: on phones (portrait or landscape) keep the start button docked to the bottom of the scroll area. */
+@media (max-width: 767px), (max-height: 600px) {
+  .briefing-dock {
+    position: sticky;
+    bottom: -1.5rem;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding: 0.75rem 1.5rem 2.5rem;
+    background: rgba(12, 7, 5, 0.96);
+    z-index: 1;
+  }
+}

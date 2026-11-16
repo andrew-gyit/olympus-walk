@@ -380,11 +380,12 @@ export function MissionSelect({ onSelect }: { onSelect: (id: string) => void }) 
 export function Briefing({ missionId, onStart, onBack }: { missionId: string; onStart: () => void; onBack: () => void }) {
   const mission = MISSION_BY_ID[missionId] ?? MISSIONS[0];
   const reports = useGameStore((s) => s.reports);
+  const touchMode = useGameStore((s) => s.touchMode);
   const last = reports.filter((r) => r.missionId === mission.id).slice(-1)[0];
   return (
     <div className="fixed inset-0 z-20 flex items-stretch">
       <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg,rgba(11,6,4,0.95),rgba(12,7,5,0.7) 58%,rgba(12,7,5,0.12))' }} />
-      <div className="relative flex w-full max-w-4xl flex-col overflow-y-auto scroll-area px-6 py-6 md:px-10 md:py-8">
+      <div className="relative flex w-full max-w-4xl flex-col overflow-y-auto overscroll-contain scroll-area px-6 py-6 md:px-10 md:py-8">
         <div className="flex items-center justify-between">
           <div className="label">MISSION BRIEFING / {mission.code}</div>
           <button className="btn btn-ghost" onClick={onBack}><ArrowLeft size={17} /> MISSIONS</button>
@@ -420,6 +421,16 @@ export function Briefing({ missionId, onStart, onBack }: { missionId: string; on
               Return inside Base Camp A (14 m radius) to close the traverse. Mission completion is confirmed
               automatically when every required objective is complete. Field values are simulation data.
             </div>
+            {touchMode && (
+              <div className="mt-4 glass p-3">
+                <div className="label mb-1">TOUCH CONTROLS</div>
+                <ul className="space-y-1 text-ui-md leading-relaxed text-mars-100/70">
+                  <li><b className="text-mars-100">Left stick</b> — walk and strafe sideways.</li>
+                  <li><b className="text-mars-100">Drag on the right</b> — look around and turn the camera.</li>
+                  <li><b className="text-mars-100">On-screen buttons</b> — scan, use, hop, map and other astronaut actions.</li>
+                </ul>
+              </div>
+            )}
           </div>
           <div>
             <SectionTitle right={<span className="mono text-ui-sm text-mars-200/65">{mission.objectives.length} TASKS</span>}>OBJECTIVES</SectionTitle>
@@ -448,11 +459,11 @@ export function Briefing({ missionId, onStart, onBack }: { missionId: string; on
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
+        <div className="briefing-dock mt-6 flex flex-wrap items-center justify-between gap-3 border-t pt-4" style={{ borderColor: 'rgba(217,145,99,0.18)' }}>
           <div className="mono max-w-md text-ui-sm leading-relaxed tracking-[0.1em] text-mars-200/65">
             BY STARTING YOU ACCEPT THE FIELD PROTOCOL: OBSERVE MORE, DISTURB LESS. THE ZONE IS PROCEDURAL AND FICTIONAL.
           </div>
-          <button className="btn btn-primary !px-6 !py-3" onClick={onStart}>
+          <button className="btn btn-primary !px-6 !py-3 max-md:w-full max-md:justify-center" onClick={onStart}>
             <Play size={19} /> BEGIN TRAVERSE
           </button>
         </div>
