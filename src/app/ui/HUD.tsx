@@ -671,11 +671,14 @@ function InteractionPrompt() {
   const analysisPoiId = useGameStore((s) => s.analysisPoiId);
   const locked = usePointerLocked();
   const cameraMode = useGameStore((s) => s.cameraMode);
+  const touchMode = useGameStore((s) => s.touchMode);
 
   if (activePanel || analysisPoiId) return null;
 
   const hint = !locked
-    ? 'CLICK THE WORLD TO CAPTURE THE MOUSE · ESC PAUSES'
+    ? touchMode
+      ? null
+      : 'CLICK THE WORLD TO CAPTURE THE MOUSE · ESC PAUSES'
     : cameraMode === 'first'
       ? 'HELMET VIEW · C TO RETURN TO THIRD PERSON'
       : null;
